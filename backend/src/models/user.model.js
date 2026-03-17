@@ -17,7 +17,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "password is required."],
         minLength: 6,
-        maxLength: 12
+        maxLength: 12,
+        select: false
     },
     verified: {
         type: Boolean,
@@ -26,12 +27,11 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Mongoose middleware which hash password before saving it
-userSchema.pre("save", async(next) => {
-    if(!this.isModified("password")) return next();
+userSchema.pre("save", async function() {
+    if(!this.isModified("password")) return;
 
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
-    next();
 });
 
 const userModel = mongoose.model("users", userSchema);

@@ -13,8 +13,8 @@ const validate = (req, res, next) => {
 }
 
 export const registerValidation = [
-    body("username").trim().isEmpty().withMessage("Username should not be empty.").isString().withMessage("Username should be string."),
+    body("username").isString().withMessage("Username should be string."),
     body("email").isEmail().withMessage("Email should be in correct email address format."),
-    body("password").trim().isEmpty().withMessage("Password should not be empty.").isLength({ min: 6, max: 12 }).withMessage("Password length should be in between 6 to 12 characters"),
+    body("password").isLength({ min: 6, max: 12 }).withMessage("Password length should be in between 6 to 12 characters"),
     validate
 ];
