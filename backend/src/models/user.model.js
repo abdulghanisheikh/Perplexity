@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -15,7 +16,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "password is required."],
-        minLength: 6
+        minLength: 6,
+        maxLength: 12
     },
     verified: {
         type: Boolean,
@@ -23,6 +25,13 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const userModel = mongoose.model("users", userSchema);
+// Mongoose middleware which hash password before saving it
+userSchema.pre("save", async() => {
+    if(!this.isModified("password")) return;
 
+    const hash = await bcrypt.hash(this.password, 10);
+    this.password = hash;
+});
+
+const userModel = mongoose.model("users", userSchema);
 export default userModel;

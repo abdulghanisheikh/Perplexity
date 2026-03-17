@@ -10,16 +10,8 @@ const chatSchema = new mongoose.Schema({
         type: String,
         required: [true, "title of chat is required."],
         default: "Untitled chat"
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
-});
+}, { timestamps: true }); // Adds createdAt and updatedAt fields and manage them automatically
 
 const chatModel = mongoose.model("chats", chatSchema);
 export default chatModel;
