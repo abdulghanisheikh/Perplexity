@@ -26,11 +26,12 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Mongoose middleware which hash password before saving it
-userSchema.pre("save", async() => {
-    if(!this.isModified("password")) return;
+userSchema.pre("save", async(next) => {
+    if(!this.isModified("password")) return next();
 
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
+    next();
 });
 
 const userModel = mongoose.model("users", userSchema);
