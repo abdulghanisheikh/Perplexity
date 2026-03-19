@@ -12,9 +12,15 @@ const validate = (req, res, next) => {
     });
 }
 
-export const registerValidation = [
+export const registerValidator = [
     body("username").isString().withMessage("Username should be string."),
     body("email").isEmail().withMessage("Email should be in correct email address format."),
+    body("password").isLength({ min: 6, max: 12 }).withMessage("Password length should be in between 6 to 12 characters"),
+    validate
+];
+
+export const loginValidator = [
+    body("username").isString().withMessage("Username should be string."),
     body("password").isLength({ min: 6, max: 12 }).withMessage("Password length should be in between 6 to 12 characters"),
     validate
 ];
