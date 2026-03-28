@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken";
 
 // Connection between web server and SMTP (email server)
 const transporter = nodemailer.createTransport({
@@ -24,26 +23,17 @@ transporter.verify()
 });
 
 // Function to send email
-export const sendEmail = async({ to, subject, username, emailVerificationToken }) => {
-    const emailVerificationURL = `http://localhost:3000/api/auth/verifyEmail?token=${emailVerificationToken}`;
-
-    const html = `
-        <p>Hi ${username},</p>
-        <p>Please verify your email address by clicking the link below:</p>
-        <a href=${emailVerificationURL}>Verify email</a>
-        <p>If you did not create an account, Ignore this email.</p>
-        <p>- The Perplexity Team</p>
-    `;
-
+export const sendEmail = async({ to, subject, html = "" }) => {
     try {
-        const mailDetails = await transporter.sendMail({
-            from: `Abdul Ghani <${process.env.GOOGLE_EMAIL_USER}>`,
+        await transporter.sendMail({
+            from: process.env.GOOGLE_EMAIL_USER,
             to,
             subject,
             html
-          });
+        });
 
         console.log("Email sent!");
+        return `Email sent successfully to ${to}`;
     } catch(err) {
         console.log("Error sending email:", err.message);
     }

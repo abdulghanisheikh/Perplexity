@@ -31,7 +31,17 @@ export async function registerUser(req, res) {
         { expiresIn: "7d" }
     );
 
-    await sendEmail({ to: user.email, subject: "Welcome to perplexity", username: user.username, emailVerificationToken });
+    const emailVerificationURL = `http://localhost:3000/api/auth/verifyEmail?token=${emailVerificationToken}`;
+
+    const html = `
+        <p>Hi ${username},</p>
+        <p>Please verify your email address by clicking the link below:</p>
+        <a href=${emailVerificationURL}>Verify email</a>
+        <p>If you did not create an account, Ignore this email.</p>
+        <p>- The Perplexity Team</p>
+    `;
+
+    const result = await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
     
     res.status(201).json({
         success: true,
