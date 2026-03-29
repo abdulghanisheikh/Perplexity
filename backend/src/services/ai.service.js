@@ -4,8 +4,9 @@ import { HumanMessage } from "@langchain/core/messages";
 import { createAgent, tool } from "langchain";
 import { sendEmail } from "./mail.service.js";
 import * as z from "zod";
+import { tavily } from "@tavily/core";
 
-// Tool which sends email to others
+// This tool let the model to send an email
 const emailTool = tool(
     sendEmail,
     {
@@ -22,6 +23,25 @@ const emailTool = tool(
     }
 );
 
+const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
+
+const webSearch = async({ query }) => {
+    const result = await tvly.search(query);
+    return JSON.stringify(result); // LangChain tools should return string as an output
+}
+
+// This tool let the model to web search
+const webSearchTool = tool(
+    webSearch,
+    {
+        name: "webSearch",
+        description: "Use this tool to search web",
+        schema: z.object({
+            query: z.string().describe("This is user's query")
+        })
+    }
+);
+
 // LLM model
 const llm = new ChatGoogleGenerativeAI({
     model: "gemini-2.5-flash",
@@ -33,12 +53,12 @@ const llm = new ChatGoogleGenerativeAI({
 // Agent => LLM having access of tools
 const agent = createAgent({
     model: llm,
-    tools: [emailTool]
+    tools: [emailTool, webSearchTool]
 });
 
 let messages = [];
 
-export const askAgent = async(query) => {
+export const askAgent = async({query}) => {
     messages.push(new HumanMessage(query));
 
     const response = await agent.invoke({messages});

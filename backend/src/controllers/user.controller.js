@@ -12,7 +12,7 @@ export const callAgent = async(req, res) => {
     }
 
     try {
-        const result = await askAgent(userQuery);
+        const result = await askAgent({ query: userQuery });
 
         res.status(200).json({
             success: true,
