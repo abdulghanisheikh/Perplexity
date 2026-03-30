@@ -11,8 +11,8 @@ const Register = () => {
 
     return (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
-        <div className="w-full max-w-sm">
-            <h1 className="text-white text-3xl font-semibold mb-1">Create an account</h1>
+        <div className="w-full max-w-sm bg-zinc-900 p-5 rounded-xl">
+            <h1 className="text-sky-400 text-3xl font-semibold mb-1">Create an account</h1>
             <p className="text-zinc-500 text-sm mb-8">Fill in the details below to get started.</p>
 
             <form className="space-y-4">
@@ -45,7 +45,7 @@ const Register = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg-white/60 text-zinc-950 text-sm rounded-lg py-2.5 hover:bg-zinc-200 transition-colors mt-2 cursor-pointer"
+                    className="w-full bg-sky-400 text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
                 >
                     Create Account
                 </button>

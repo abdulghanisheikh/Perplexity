@@ -9,7 +9,7 @@ const InputField = ({ label, type = "text", name, placeholder, value, onChange }
                 placeholder={placeholder}
                 type={type}
                 onChange={onChange}
-                className="w-full bg-zinc-900 text-white text-sm placeholder-zinc-600 border border-zinc-800 rounded-lg px-3.5 py-2.5 pr-10 outline-none focus:border-zinc-600 transition-colors"
+                className="w-full bg-zinc-950 text-white text-sm placeholder-zinc-600 border border-zinc-800 rounded-lg px-3.5 py-2.5 pr-10 outline-none focus:border-zinc-600 transition-colors"
                 />
             </div>
         </div>
