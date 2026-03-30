@@ -1,6 +1,7 @@
 import { useState } from "react";
 import InputField from "../components/InputField";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
 	const [data, setData] = useState({
@@ -8,13 +9,26 @@ const Login = () => {
 		password: ""
 	});
 
+	const navigate = useNavigate();
+	const {handleLogin} = useAuth();
+
+	const handleSubmit = async(e) => {
+		e.preventDefault();
+
+		const {username, password} = data;
+		const {success, message} = await handleLogin({username, password});
+
+		if(success) navigate("/");
+		console.log(message);
+	}
+
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
         <div className="w-full max-w-sm bg-zinc-900 p-5 rounded-xl">
           <h1 className="text-sky-400 text-3xl font-semibold mb-1">Welcome back</h1>
           <p className="text-zinc-500 text-sm mb-8">Sign in to your account to continue.</p>
 
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
 
             <InputField
             type="text"

@@ -3,12 +3,17 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
+import cors from "cors";
 
 export const app = express();
 
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true
+}));
 
 // Health check
 app.get("/", (req, res) => {
