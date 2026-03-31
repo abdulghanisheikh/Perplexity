@@ -10,9 +10,7 @@ export const useAuth = () => {
             dispatch(setLoading(true));
             
             const {data} = await register({username, email, password});
-            if(data) {
-                console.log("Verification email sent");
-            }
+            return data;
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "Registration failed"));
         } finally {

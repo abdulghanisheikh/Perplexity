@@ -4,15 +4,18 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
 import cors from "cors";
+import morgan from "morgan";
 
 export const app = express();
 
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(morgan("dev"));
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"]
 }));
 
 // Health check

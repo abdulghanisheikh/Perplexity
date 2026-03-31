@@ -4,11 +4,11 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 import bcrypt from "bcrypt";
 
-export async function registerUser(req, res) {
+export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
 
     const isUserAlreadyExists = await userModel.findOne({
-        $or: [ { username }, { email } ]
+        $or: [ {username}, {email} ]
     });
 
     if(isUserAlreadyExists) {
@@ -54,9 +54,9 @@ export async function registerUser(req, res) {
     });
 }
 
-export async function verifyEmail(req, res) {
+export const verifyEmail = async(req, res) => {
     const { token } = req.query;
-    const loginURL = "http://localhost:3000/auth/api/login";
+    const loginPageURL = `${process.env.FRONTEND_URL}/login`;
 
     if(!token) {
         return res.status(400).json({
@@ -84,7 +84,7 @@ export async function verifyEmail(req, res) {
         const html = `
             <h1>Your email has been successfully verified. ✅</h1>
             <p>You can now log in and start using Perplexity.</p>
-            <a href="${loginURL}">Login to your account</a>
+            <a href="${loginPageURL}">Login to your account</a>
             <p>- The Perplexity Team</p>
         `;
 
@@ -98,7 +98,7 @@ export async function verifyEmail(req, res) {
     }
 }
 
-export async function loginUser(req, res) {
+export const loginUser = async(req, res) => {
     const { username, password } = req.body;
 
     const user = await userModel.findOne({ username }).select("+password");
@@ -148,7 +148,7 @@ export async function loginUser(req, res) {
     });
 }
 
-export async function getMe(req, res) {
+export const getMe = async(req, res) => {
     const userID = req.user.id;
     const user = await userModel.findById(userID);
 
