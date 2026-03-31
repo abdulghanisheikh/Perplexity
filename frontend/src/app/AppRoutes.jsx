@@ -1,4 +1,3 @@
-import React from 'react'
 import { Routes, Route, BrowserRouter } from "react-router";
 import Login from "../features/auth/pages/Login";
 import Register from "../features/auth/pages/Register";
@@ -11,8 +10,8 @@ const AppRoutes = () => {
             <Route path="/" element={<Protected>
                 <Dashboard />
             </Protected>}></Route>
-            <Route path='/login' element={ <Login /> }></Route>
-            <Route path='/register' element={ <Register /> }></Route>
+            <Route path='/login' element={<Login />}></Route>
+            <Route path='/register' element={<Register />}></Route>
         </Routes>
     </BrowserRouter>
 }

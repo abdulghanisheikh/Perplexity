@@ -3,6 +3,7 @@ import { sendEmail } from "../services/mail.service.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import bcrypt from "bcrypt";
+import { redis } from "../configs/cache.config.js";
 
 export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
@@ -168,5 +169,21 @@ export const getMe = async(req, res) => {
             username: user.username,
             email: user.email
         }
+    });
+}
+
+export const logoutUser = async(req, res) => {
+    const token = req.cookies.token;
+
+    res.clearCookie("token");
+
+    // Token blacklisting
+    // EX => Expiry
+    // Key => token , value => date
+    await redis.set(token, Date.now().toString(), "EX", 60*60);
+
+    res.status(200).json({
+        success: true,
+        message: "User logged out"
     });
 }
