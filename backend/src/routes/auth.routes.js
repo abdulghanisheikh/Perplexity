@@ -38,6 +38,6 @@ authRouter.get("/getMe", authUser, getMe);
  * @description Logout user
  * @access private
  */
-authRouter.get("/logout", authUser, logoutUser);
+authRouter.post("/logout", authUser, logoutUser);
 
 export default authRouter;

@@ -157,7 +157,8 @@ export const getMe = async(req, res) => {
         return res.status(409).json({
             success: false,
             message: "User not found",
-            err: "User not found"
+            err: "User not found",
+            user: null
         });
     }
 
@@ -178,11 +179,11 @@ export const logoutUser = async(req, res) => {
     res.clearCookie("token");
 
     // Token blacklisting
-    // EX => Expiry
+    // ex => Expiry
     // Key => token , value => date
-    await redis.set(token, Date.now().toString(), "EX", 60*60);
+    await redis.set(token, Date.now().toString(), {ex: 60*60*24*7});
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "User logged out"
     });

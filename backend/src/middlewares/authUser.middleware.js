@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 import {redis} from "../configs/cache.config.js";
 
-export async function authUser(req, res, next) {
-    const { token } = req.cookies;
+export const authUser = async(req, res, next) => {
+    const token = req.cookies.token;
 
     if(!token) {
         return res.status(401).json({

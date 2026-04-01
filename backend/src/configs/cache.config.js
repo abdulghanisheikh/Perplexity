@@ -1,16 +1,18 @@
-import { Redis } from "ioredis";
+import {Redis} from "@upstash/redis";
 import "dotenv/config";
 
 export const redis = new Redis({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-    password: process.env.REDIS_PASSWORD
+    url: process.env.REDIS_URL,
+    token: process.env.REDIS_TOKEN
 });
 
-redis.on("connect", () => {
-    console.log("Redis connected");
-});
+const checkRedisConnection = async() => {
+    try {
+        await redis.ping();
+        console.log("Redis connected");
+    } catch(err) {
+        console.log("Redis connection failed:", err.message);
+    }
+}
 
-redis.on("error", (err) => {
-    console.log(err.message);
-});
+checkRedisConnection();

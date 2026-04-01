@@ -25,3 +25,8 @@ export const getMe = async() => {
     const response = await api.get("/api/auth/getMe");
     return response;
 }
+
+export const logout = async() => {
+    const response = await api.post("/api/auth/logout");
+    return response;
+}

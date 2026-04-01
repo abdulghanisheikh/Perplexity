@@ -1,6 +1,6 @@
 import AppRoutes from "./AppRoutes";
-import {useAuth} from "../features/auth/hooks/useAuth.js";
 import { useEffect } from "react";
+import {useAuth} from "../features/auth/hooks/useAuth.js";
 
 const App = () => {
 	const auth = useAuth();
