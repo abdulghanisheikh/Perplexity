@@ -58,7 +58,7 @@ const Login = () => {
 
 					<button
 						type="submit"
-						className="w-full bg-sky-400 text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
+						className="w-full bg-sky-400 active:scale-95 duration-300 ease-in-out text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
 					>
 						Login
 					</button>
