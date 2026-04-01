@@ -18,12 +18,14 @@ const Register = () => {
 
         const {username, email, password} = data;
 
-        const {success, message} = await handleRegister({username, email, password});
+        const res = await handleRegister({username, email, password});
+        const {success} = res.data;
 
         if(success) {
-            navigate("/login");
+            setTimeout(() => {
+                navigate("/login");
+            }, 1000);
         }
-        console.log(message);
     }
 
     return (
@@ -69,10 +71,10 @@ const Register = () => {
             </form>
 
             <p className="text-zinc-600 text-sm text-center mt-6">
-            Already have an account?{" "}
-            <Link to="/login" className="text-zinc-400 cursor-pointer hover:text-white transition-colors">
-                Sign in
-            </Link>
+                Already have an account?{" "}
+                <Link to="/login" className="text-zinc-400 cursor-pointer hover:text-white transition-colors">
+                    Sign in
+                </Link>
             </p>
         </div>
         </div>

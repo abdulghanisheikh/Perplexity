@@ -10,7 +10,7 @@ const api = axios.create({
 export const register = async({ username, email, password }) => {
     const payload = {username, email, password};
 
-    const response = await api.post("/api/auth/login", payload);
+    const response = await api.post("/api/auth/register", payload);
     return response;
 }
 
