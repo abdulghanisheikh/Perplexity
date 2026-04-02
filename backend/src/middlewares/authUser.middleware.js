@@ -28,7 +28,8 @@ export const authUser = async(req, res, next) => {
     if(isTokenBlacklisted) {
         return res.status(401).json({
             success: false,
-            message: "Invalid token"
+            message: "Invalid token",
+            err: "Blacklisted token"
         });
     }
 

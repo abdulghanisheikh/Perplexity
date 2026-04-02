@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import {useAuth} from "../../auth/hooks/useAuth.js";
 import {useNavigate} from "react-router";
+import {useChat} from "../hooks/useChat.js";
+import { useEffect } from "react";
 
 const Dashboard = () => {
     const user = useSelector(state => state.auth.user);
@@ -11,6 +13,13 @@ const Dashboard = () => {
         const { success } = await handleLogout();
         if(success) navigate("/login");
     }
+
+    const chat = useChat();
+
+    // Init socket connection when comes to Dashboard
+    useEffect(() => {
+        chat.initSocketConnection();
+    }, []);
 
     return <main className="bg-black h-screen w-screen">
         <div className="nav flex justify-around items-center p-2 text-white bg-zinc-900">
