@@ -2,7 +2,7 @@ import express from "express";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
-import userRouter from "./routes/user.routes.js";
+import chatRouter from "./routes/chat.routes.js";
 import cors from "cors";
 import morgan from "morgan";
 
@@ -24,4 +24,4 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
-app.use("/api/user", userRouter);
+app.use("/api/chat", chatRouter);

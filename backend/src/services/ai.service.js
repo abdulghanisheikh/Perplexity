@@ -1,10 +1,10 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import "dotenv/config";
-import { HumanMessage } from "@langchain/core/messages";
-import { createAgent, tool } from "langchain";
+import { createAgent, tool, SystemMessage, HumanMessage } from "langchain";
 import { sendEmail } from "./mail.service.js";
 import * as z from "zod";
 import { tavily } from "@tavily/core";
+import {ChatMistralAI} from "@langchain/mistralai";
 
 // This tool let the model to send an email
 const emailTool = tool(
@@ -42,29 +42,36 @@ const webSearchTool = tool(
     }
 );
 
-// LLM model
-const llm = new ChatGoogleGenerativeAI({
+const geminiModel = new ChatGoogleGenerativeAI({
     model: "gemini-2.5-flash",
     apiKey: process.env.GEMINI_API_KEY,
-    temperature: 2,
+    temperature: 0,
+    maxRetries: 2
+});
+
+const mistralModel = new ChatMistralAI({
+    apiKey: process.env.MISTRAL_API_KEY,
+    model: 'mistral-small-2603',
+    temperature: 0,
     maxRetries: 2
 });
 
 // Agent => LLM having access of tools
 const agent = createAgent({
-    model: llm,
+    model: geminiModel,
     tools: [emailTool, webSearchTool]
 });
 
-let messages = [];
-
-export const askAgent = async({query}) => {
-    messages.push(new HumanMessage(query));
-
+export const generateResponse = async(messages) => {
     const response = await agent.invoke({messages});
+    return response;
+}
 
-    const answer = response.messages[ response.messages.length-1 ].content;
-    messages.push(answer);
+export const generateChatTitle = async(message) => {
+    const response = await mistralModel.invoke([
+        ["system", "Give a one-liner or one-word Title for the chat out from the user's message, which user is asking in the user message."],
+        ["human", message]
+    ]);
 
-    return answer;
+    return response.content;
 }

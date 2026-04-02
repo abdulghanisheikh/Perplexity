@@ -6,11 +6,11 @@ import { useEffect } from "react";
 
 const Dashboard = () => {
     const user = useSelector(state => state.auth.user);
-    const {handleLogout} = useAuth();
+    const auth = useAuth();
     const navigate = useNavigate();
 
     const handleClick = async() => {
-        const { success } = await handleLogout();
+        const { success } = await auth.handleLogout();
         if(success) navigate("/login");
     }
 
