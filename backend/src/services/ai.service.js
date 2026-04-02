@@ -1,6 +1,6 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import "dotenv/config";
-import { createAgent, tool, SystemMessage, HumanMessage } from "langchain";
+import { createAgent, tool } from "langchain";
 import { sendEmail } from "./mail.service.js";
 import * as z from "zod";
 import { tavily } from "@tavily/core";
@@ -43,7 +43,7 @@ const webSearchTool = tool(
 );
 
 const geminiModel = new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash",
+    model: "gemini-2.5-flash-lite",
     apiKey: process.env.GEMINI_API_KEY,
     temperature: 0,
     maxRetries: 2
@@ -51,7 +51,7 @@ const geminiModel = new ChatGoogleGenerativeAI({
 
 const mistralModel = new ChatMistralAI({
     apiKey: process.env.MISTRAL_API_KEY,
-    model: 'mistral-small-2603',
+    model: 'mistral-small-latest',
     temperature: 0,
     maxRetries: 2
 });
@@ -69,8 +69,15 @@ export const generateResponse = async(messages) => {
 
 export const generateChatTitle = async(message) => {
     const response = await mistralModel.invoke([
-        ["system", "Give a one-liner or one-word Title for the chat out from the user's message, which user is asking in the user message."],
-        ["human", message]
+        ["system", `
+            You are a helpful assistant that generates concise and descriptive titles for chat conversations.
+
+            User will provide you with the first message of a chat conversation, and will generate a title that captures the essence of the conversation in 2-4 words. The title should be clear, relevant, and engaging, giving users a quick understanding of the chat's topic.
+        `],
+        ["human", `
+            Generate a title for a chat conversation based on the following first message:
+            ${message}
+        `]
     ]);
 
     return response.content;

@@ -1,7 +1,10 @@
 import { generateResponse, generateChatTitle } from "../services/ai.service.js";
 import { HumanMessage, AIMessage } from "langchain";
+import chatModel from "../models/chat.model.js";
+import messageModel from "../models/message.model.js";
 
 const messages = [];
+
 export const sendMessage = async(req, res) => {
     const { message } = req.body;
 
@@ -13,13 +16,15 @@ export const sendMessage = async(req, res) => {
         });
     }
 
-    let chatTitle;
     try {
-        if(messages.length === 0) {
-            chatTitle = await generateChatTitle(message);
-        }
-
         messages.push(new HumanMessage(message));
+
+        const title = await generateChatTitle(message);
+        const chat = await chatModel.create({
+            user: req.user.id,
+            title
+        });
+
         const response = await generateResponse(messages);
 
         const aiMessage = response.messages[ response.messages.length-1 ].content;
@@ -28,7 +33,9 @@ export const sendMessage = async(req, res) => {
         res.status(200).json({
             success: true,
             message: "Response generated",
-            aiMessage
+            aiMessage,
+            title,
+            chat
         });
     } catch(err) {
         console.log(err.message);
