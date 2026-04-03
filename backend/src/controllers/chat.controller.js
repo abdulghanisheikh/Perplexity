@@ -16,7 +16,7 @@ export const sendMessage = async(req, res) => {
 
     let chatTitle = null, chat = null;
 
-    // no chatId => first time message on a chat
+    // first message on the chat
     if(!chatId) {
         chatTitle = await generateChatTitle(message);
         chat = await chatModel.create({
@@ -25,26 +25,35 @@ export const sendMessage = async(req, res) => {
         });
     }
 
+    // fetching all messages of this chat
     let messages = [];
-    // if chatId is coming
-    messages = await messageModel.find({chat: chatId});
-    // if chatId is not coming
-    if(!chatId) messages = await messageModel.find({chat: chat._id});
+    if(!chatId) {
+        messages = await messageModel.find({chat: chat._id});
+    } else {
+        messages = await messageModel.find({chat: chatId});
+    }
+
+    if(messages.length > 0) {
+        messages.forEach((msg, index) => {
+            if(msg.role === "ai") messages[index] = new AIMessage(msg);
+            else messages[index] = new HumanMessage(msg);
+        });
+    }
 
     try {
         messages.push(new HumanMessage(message));
 
-        const response = await generateResponse(messages);
-        const result = response.messages[ response.messages.length-1 ].content;
-
         const userMessage = await messageModel.create({
-            chat: chatId === null ? chat._id : chatId,
+            chat: chatId || chat._id,
             content: message,
             role: "user"
         });
-        
+
+        const response = await generateResponse(messages);
+        const result = response.messages[ response.messages.length-1 ].content;
+
         const aiMessage = await messageModel.create({
-            chat: chatId === null ? chat._id : chatId,
+            chat: chatId || chat._id,
             content: result,
             role: "ai"
         });
@@ -55,7 +64,6 @@ export const sendMessage = async(req, res) => {
             success: true,
             message: "Response generated",
             aiMessage,
-            title,
             chat
         });
     } catch(err) {
