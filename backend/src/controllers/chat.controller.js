@@ -26,12 +26,7 @@ export const sendMessage = async(req, res) => {
     }
 
     // fetching all messages of this chat
-    let messages = [];
-    if(!chatId) {
-        messages = await messageModel.find({chat: chat._id});
-    } else {
-        messages = await messageModel.find({chat: chatId});
-    }
+    let messages = await messageModel.find({chat: chatId || chat._id});
 
     if(messages.length > 0) {
         messages.forEach((msg, index) => {
@@ -43,7 +38,7 @@ export const sendMessage = async(req, res) => {
     try {
         messages.push(new HumanMessage(message));
 
-        const userMessage = await messageModel.create({
+        await messageModel.create({
             chat: chatId || chat._id,
             content: message,
             role: "user"
@@ -73,4 +68,46 @@ export const sendMessage = async(req, res) => {
             err: err.message
         });
     }
+}
+
+export const getChats = async(req, res) => {
+    const user = req.user;
+    const chats = await chatModel.find({user: user.id});
+
+    if(!chats) {
+        return res.status(400).json({
+            success: false,
+            message: "No chats found"
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Chats fetched",
+        chats
+    });
+}
+
+export const getMessages = async(req, res) => {
+    const {chatId} = req.params;
+
+    const chat = await chatModel.findOne({
+        _id: chatId,
+        user: req.user.id
+    });
+
+    if(!chat) {
+        return res.status(404).json({
+            success: false,
+            message: "Chat not found"
+        });
+    }
+
+    const messages = await messageModel.find({chat: chatId});
+
+    res.status(200).json({
+        success: true,
+        message: "Messages fetched",
+        messages
+    });
 }
