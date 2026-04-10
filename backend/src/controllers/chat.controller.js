@@ -111,3 +111,28 @@ export const getMessages = async(req, res) => {
         messages
     });
 }
+
+export const deleteChat = async(req, res) => {
+    const chatId = req.params;
+    
+    // chat delete
+    const chat = await chatModel.findOneAndDelete({
+        _id: chatId,
+        user: req.user.id
+    });
+
+    if(!chat) {
+        return res.status(404).json({
+            success: false,
+            message: "No chat to delete"
+        });
+    }
+
+    // delete all messages of the chat
+    await messageModel.deleteMany({chat: chatId});
+
+    res.status(200).json({
+        success: true,
+        message: "Chat deleted"
+    });
+}

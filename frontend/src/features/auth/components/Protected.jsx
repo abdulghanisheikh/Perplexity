@@ -5,6 +5,7 @@ const Protected = ({children}) => {
     const user = useSelector(state => state.auth.user);
     const loading = useSelector(state => state.auth.loading);
 
+
     if(loading) {
         return (
             <div className='h-screen w-screen bg-zinc-950 flex justify-center items-center'>
@@ -14,7 +15,7 @@ const Protected = ({children}) => {
     }
 
     if(!user) {
-        return <Navigate to="/login" />
+        return <Navigate to='/login'></Navigate>;
     }
 
     return children;

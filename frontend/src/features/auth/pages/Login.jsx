@@ -1,6 +1,6 @@
 import { useState } from "react";
 import InputField from "../components/InputField";
-import { Link, useNavigate } from "react-router";
+import { Link, Navigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import { useSelector } from "react-redux";
 
@@ -10,24 +10,26 @@ const Login = () => {
 		password: ""
 	});
 
-	const navigate = useNavigate();
 	const { handleLogin } = useAuth();
 	const user = useSelector(state => state.auth.user);
 	const loading = useSelector(state => state.auth.loading);
 
 	// User already loggedIn
 	if(!loading && user) {
-		navigate("/");
+		return <Navigate to='/'></Navigate>
 	}
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		const { username, password } = data;
-		const { success, message } = await handleLogin({ username, password });
+		const {data} = await handleLogin({ username, password });
 
-		if(success) navigate("/");
-		console.log(message);
+		const {success} = data;
+
+		if(success) {
+			return <Navigate to='/'></Navigate>
+		}
 	}
 
 	return (

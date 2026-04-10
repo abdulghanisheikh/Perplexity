@@ -1,7 +1,8 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import InputField from "../components/InputField";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { Navigate } from "react-router";
 
 const Register = () => {
     const [data, setData] = useState({
@@ -11,20 +12,17 @@ const Register = () => {
     });
     
     const {handleRegister} = useAuth();
-    const navigate = useNavigate();
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-
         const {username, email, password} = data;
+        const myData = await handleRegister({username, email, password});
 
-        const res = await handleRegister({username, email, password});
-        const {success} = res.data;
+        const {success} = myData;
 
         if(success) {
-            setTimeout(() => {
-                navigate("/login");
-            }, 1000);
+            setData({username: "", email: "", password: ""});
+            return <Navigate to='/login'></Navigate>;
         }
     }
 
@@ -64,7 +62,7 @@ const Register = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg-sky-400 text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
+                    className="w-full bg-sky-400 active:scale-90 duration-300 ease-in-out text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
                 >
                     Create Account
                 </button>
