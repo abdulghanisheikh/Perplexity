@@ -3,13 +3,13 @@ import {useAuth} from "../../auth/hooks/useAuth.js";
 import {useNavigate} from "react-router";
 import {useChat} from "../hooks/useChat.js";
 import { useEffect } from "react";
+import Navbar from "../components/Navbar.jsx";
 
 const Dashboard = () => {
-    const user = useSelector(state => state.auth.user);
     const auth = useAuth();
     const navigate = useNavigate();
 
-    const handleClick = async() => {
+    const handleLogoutClick = async() => {
         const { success } = await auth.handleLogout();
         if(success) navigate("/login");
     }
@@ -21,13 +21,30 @@ const Dashboard = () => {
         chat.initSocketConnection();
     }, []);
 
-    return <main className="bg-black h-screen w-screen">
-        <div className="nav flex justify-around items-center p-2 text-white bg-zinc-900">
-            <h1 className="lg:text-3xl font-semibold">Welcome <span className="text-sky-500">{
-                user ? user.username : "User"
-            }</span></h1>
-            <button onClick={handleClick} className="px-5 py-1 rounded-lg lg:text-sm text-xs border border-red-400 bg-red-600/20 active:scale-90 duration-300 ease-in-out cursor-pointer">Logout</button>
+    return <main className="bg-neutral-950 flex h-screen w-screen text-white">
+        <div className="w-[25%] py-3 flex flex-col gap-10 bg-neutral-900 rounded-md">
+            
+            <Navbar click={handleLogoutClick} />
+
+            <div className="chats flex flex-col gap-2 px-3">
+                <div className="chat w-full rounded-md bg-neutral-800 px-5 py-1.5">
+                    <p>Chat title</p>
+                </div>
+                <div className="chat w-full rounded-md bg-neutral-800 px-5 py-1.5">
+                    <p>Chat title</p>
+                </div>
+                <div className="chat w-full rounded-md bg-neutral-800 px-5 py-1.5">
+                    <p>Chat title</p>
+                </div>
+                <div className="chat w-full rounded-md bg-neutral-800 px-5 py-1.5">
+                    <p>Chat title</p>
+                </div>
+                <div className="chat w-full rounded-md bg-neutral-800 px-5 py-1.5">
+                    <p>Chat title</p>
+                </div>
+            </div>
         </div>
+        <div className="chatting w-[75%]"></div>
     </main>
 }
 
