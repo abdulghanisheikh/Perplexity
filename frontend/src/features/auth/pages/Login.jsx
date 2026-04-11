@@ -23,9 +23,9 @@ const Login = () => {
 		e.preventDefault();
 
 		const { username, password } = data;
-		const {data} = await handleLogin({ username, password });
+		const myData = await handleLogin({ username, password });
 
-		const {success} = data;
+		const {success} = myData;
 
 		if(success) {
 			return <Navigate to='/'></Navigate>
