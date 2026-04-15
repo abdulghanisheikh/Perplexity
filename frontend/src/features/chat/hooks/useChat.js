@@ -9,8 +9,6 @@ export const useChat = () => {
     const handleSendMessage = async({message, chatId}) => {
         try {
             dispatch(setLoading(true));
-
-            
             
             const {data} = await sendMessage({message, chatId});
             const {success, aiMessage, chat} = data;
@@ -56,22 +54,26 @@ export const useChat = () => {
         }
     }
 
-    const handleOpenChat = async(chatId) => {
-        const {data} = await getMessages(chatId);
+    const handleOpenChat = async({chatId, message}) => {
+        // if no messages are fetched => fetch messages and append
+        if(message[chatId].length === 0) {
+            const {data} = await getMessages(chatId);
 
-        const {success, messages} = data;
+            const {success, messages} = data;
 
-        if(success) {
-            const formattedMessages = messages.map((msg) => {
-                return {
-                    content: msg.content,
-                    role: msg.role
-                }
-            });
+            if(success) {
+                const formattedMessages = messages.map((msg) => {
+                    return {
+                        content: msg.content,
+                        role: msg.role
+                    }
+                });
 
-            dispatch(addMessages({chatId, messages: formattedMessages}));
-            dispatch(setCurrentChatId(chatId));
+                dispatch(addMessages({chatId, messages: formattedMessages}));
+            }
         }
+
+        dispatch(setCurrentChatId(chatId));
     }
 
     return {initSocketConnection, handleSendMessage, handleGetChats, handleOpenChat};

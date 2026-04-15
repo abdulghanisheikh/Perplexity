@@ -8,7 +8,7 @@ import ReactMarkdown from "react-markdown";
 import { IoMdAdd } from "react-icons/io";
 
 const Dashboard = () => {
-    const [userMessage, setUserMessage] = useState("");
+    const [userMessage, setUserMessage] = useState('');
     const navigate = useNavigate();
 
     const auth = useAuth();
@@ -18,6 +18,7 @@ const Dashboard = () => {
     const chatList = useSelector(state => state.chat.chats);
     const currentChatId = useSelector(state => state.chat.currentChatId);
     const messages = useSelector(state => state.chat.message[currentChatId]);
+    const msgObj = useSelector(state => state.chat.message);
 
     const handleLogoutClick = async() => {
         const { success } = await auth.handleLogout();
@@ -57,7 +58,7 @@ const Dashboard = () => {
                     return <div
                     onClick={() => {
                         if(chatId === currentChatId) return;
-                        chat.handleOpenChat(chatId);
+                        chat.handleOpenChat({chatId, message: msgObj});
                     }}
                     key={chatId} className={`
                     chat hover:scale-101 border border-white/50 duration-300 ease-in-out cursor-pointer w-full rounded-xl hover:bg-neutral-900 px-5 py-2 overflow-x-hidden
@@ -98,11 +99,11 @@ const Dashboard = () => {
             })}
 
             <footer>
-                <form onSubmit={handleSendMessageClick} className="userInput w-2/3 flex gap-3 justify-center rounded-lg fixed bottom-5 left-110 px-3">
+                <form onSubmit={handleSendMessageClick} className="userInput w-2/3 flex gap-3 justify-center rounded-lg fixed bottom-5 left-100 px-3">
                     <input type="text" value={userMessage} onChange={(e) => setUserMessage(e.target.value)} placeholder="Type your message" className="w-[85%] py-3 text-sm bg-neutral-950 border border-white/50 outline-none hover:bg-neutral-900 duration-300 ease-in-out px-2 rounded-lg" />
                     
-                    <button disabled={!userMessage.trim()} type="submit" className={`
-                    ${!userMessage.trim() ? 'opacity-50' : 'cursor-pointer hover:bg-neutral-900 active:scale-90 duration-300 ease-in-out'} border border-white/50 rounded-md px-5
+                    <button disabled={!userMessage.trim() || loading} type="submit" className={`
+                    ${!userMessage.trim() && loading ? 'opacity-50' : 'cursor-pointer hover:bg-neutral-900 active:scale-90 duration-300 ease-in-out'} border border-white/50 rounded-md px-5
                     `}>{
                         loading ?
                         "Sending..." :
