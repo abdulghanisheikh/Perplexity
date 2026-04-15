@@ -4,7 +4,7 @@ import {useChat} from "../hooks/useChat.js";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import { useSelector } from "react-redux";
-import Markdown from "react-markdown";
+import ReactMarkdown from "react-markdown";
 import { IoMdAdd } from "react-icons/io";
 
 const Dashboard = () => {
@@ -72,19 +72,33 @@ const Dashboard = () => {
 
         <section style={{
             scrollbarWidth: 'none'
-        }} className="chatting min-h-screen w-[75%] overflow-y-auto relative py-5 px-15 flex flex-col gap-3 pb-20">
+        }} className="chatting min-h-screen w-[75%] overflow-y-auto relative py-5 px-40 flex flex-col gap-3 pb-20">
 
             {messages && messages.map((msg, index) => {
-                return <div key={index} className={`user p-2 rounded-lg self-end border border-white/10 text-sm 
-                    ${msg.role === "ai" ? 
-                    "w-[75%] self-start bg-[#1c1d2a]" : 
-                    "w-fit bg-neutral-900 self-end rounded-br-none"}`}>
-                    <Markdown>{msg.content}</Markdown>
+                return <div key={index} className={`user p-2 rounded-lg text-sm
+                ${msg.role === "ai" ? 
+                "w-[75%] self-start" : 
+                "w-fit bg-neutral-900 self-end shadow-md shadow-black/50 rounded-br-none"}`}>
+                    {msg.role === "user" ? (
+                        <p>{msg.content}</p>
+                    ) : (
+                        <ReactMarkdown
+                        components={{
+                            p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
+                            ul: ({children}) => <p className="mb-2 list-disc pl-5">{children}</p>,
+                            ol: ({children}) => <p className="mb-2 list-decimal pl-5">{children}</p>,
+                            code: ({children}) => <code className="rounded bg-white/10 px-1 py-0.5">{children}</code>,
+                            pre: ({children}) => <pre className="mb-2 overflow-x-auto rounded-xl bg-black/30 p-3">{children}</pre>
+                        }}
+                        >
+                            {msg.content}
+                        </ReactMarkdown>
+                    )}
                 </div>
             })}
 
             <footer>
-                <form onSubmit={handleSendMessageClick} className="userInput w-[70%] flex gap-3 justify-center rounded-lg fixed bottom-5 px-3">
+                <form onSubmit={handleSendMessageClick} className="userInput w-2/3 flex gap-3 justify-center rounded-lg fixed bottom-5 left-110 px-3">
                     <input type="text" value={userMessage} onChange={(e) => setUserMessage(e.target.value)} placeholder="Type your message" className="w-[85%] py-3 text-sm bg-neutral-950 border border-white/50 outline-none hover:bg-neutral-900 duration-300 ease-in-out px-2 rounded-lg" />
                     
                     <button disabled={!userMessage.trim()} type="submit" className={`

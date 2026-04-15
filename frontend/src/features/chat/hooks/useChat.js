@@ -9,6 +9,8 @@ export const useChat = () => {
     const handleSendMessage = async({message, chatId}) => {
         try {
             dispatch(setLoading(true));
+
+            
             
             const {data} = await sendMessage({message, chatId});
             const {success, aiMessage, chat} = data;
@@ -20,7 +22,7 @@ export const useChat = () => {
                 }
 
                 // user message added
-                dispatch(addNewMessage({chatId: chatId || chat._id, role: "user", content: message}));
+                dispatch(addNewMessage({chatId: chatId, role: "user", content: message}));
 
                 // AI message added
                 dispatch(addNewMessage({chatId: chatId || chat._id, role: aiMessage.role, content: aiMessage.content}));
