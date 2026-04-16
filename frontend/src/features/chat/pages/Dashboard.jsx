@@ -57,8 +57,10 @@ const Dashboard = () => {
                 {chatList && Object.keys(chatList).map((chatId) => {
                     return <div
                     onClick={() => {
-                        if(chatId === currentChatId) return;
-                        chat.handleOpenChat({chatId, message: msgObj});
+                        if(chatId === currentChatId) {
+                            return;
+                        }
+                        chat.handleOpenChat({activeChatId: chatId, message: msgObj});
                     }}
                     key={chatId} className={`
                     chat hover:scale-101 border border-white/50 duration-300 ease-in-out cursor-pointer w-full rounded-xl hover:bg-neutral-900 px-5 py-2 overflow-x-hidden

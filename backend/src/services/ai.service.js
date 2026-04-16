@@ -1,10 +1,11 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import "dotenv/config";
-import { createAgent, tool } from "langchain";
+import { AIMessage, createAgent, HumanMessage, tool } from "langchain";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { sendEmail } from "./mail.service.js";
 import * as z from "zod";
-import { tavily } from "@tavily/core";
 import {ChatMistralAI} from "@langchain/mistralai";
+import { webSearch } from "./search_internet.service.js";
 
 // This tool let the model to send an email
 const emailTool = tool(
@@ -23,21 +24,14 @@ const emailTool = tool(
     }
 );
 
-const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
-
-const webSearch = async({ query }) => {
-    const result = await tvly.search(query);
-    return JSON.stringify(result); // LangChain tools should return string as an output
-}
-
 // This tool let the model to web search
 const webSearchTool = tool(
     webSearch,
     {
         name: "webSearch",
-        description: "Use this tool to search web",
+        description: "Use this tool to get the relevant information from the internet",
         schema: z.object({
-            query: z.string().describe("This is user's query")
+            query: z.string().describe("The search query")
         })
     }
 );
@@ -57,15 +51,27 @@ const mistralModel = new ChatMistralAI({
 });
 
 // Agent => LLM having access of tools
-const agent = createAgent({
-    model: geminiModel,
-    tools: [emailTool, webSearchTool]
+const agent = createReactAgent({
+    llm: mistralModel,
+    tools: [emailTool, webSearchTool],
+    messageModifier: `You are a helpful assistant. You have access to web search and email tools. 
+    Use web search when you need current or real-time information.`
 });
 
 export const generateResponse = async(messages) => {
     const response = await agent.invoke({messages});
     return response;
 }
+
+// const stream = await agent.stream(
+//   {
+//     messages: [{
+//       role: "user",
+//       content: "Search for AI news and summarize the findings"
+//     }],
+//   },
+//   { streamMode: "values" }
+// );
 
 export const generateChatTitle = async(message) => {
     const response = await mistralModel.invoke([

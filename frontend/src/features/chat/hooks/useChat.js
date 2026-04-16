@@ -14,18 +14,19 @@ export const useChat = () => {
             const {success, aiMessage, chat} = data;
 
             if(success) {
-                // create new chat
+                const activeChatId = chatId || chat._id;
+                dispatch(setCurrentChatId(activeChatId));
+
+                // create new chat if NO chatId
                 if(!chatId) {
                     dispatch(createNewChat({chatId: chat._id, title: chat.title}));
                 }
 
                 // user message added
-                dispatch(addNewMessage({chatId: chatId, role: "user", content: message}));
+                dispatch(addNewMessage({chatId: chatId || chat._id, role: "user", content: message}));
 
                 // AI message added
                 dispatch(addNewMessage({chatId: chatId || chat._id, role: aiMessage.role, content: aiMessage.content}));
-
-                dispatch(setCurrentChatId(chatId || chat._id));
             }
 
         } catch(err) {
@@ -54,10 +55,12 @@ export const useChat = () => {
         }
     }
 
-    const handleOpenChat = async({chatId, message}) => {
+    const handleOpenChat = async({activeChatId, message}) => {
+        dispatch(setCurrentChatId(activeChatId));
+
         // if no messages are fetched => fetch messages and append
-        if(message[chatId].length === 0) {
-            const {data} = await getMessages(chatId);
+        if(!message[activeChatId] || message[activeChatId].length === 0) {
+            const {data} = await getMessages(activeChatId);
 
             const {success, messages} = data;
 
@@ -69,11 +72,9 @@ export const useChat = () => {
                     }
                 });
 
-                dispatch(addMessages({chatId, messages: formattedMessages}));
+                dispatch(addMessages({chatId: activeChatId, messages: formattedMessages}));
             }
         }
-
-        dispatch(setCurrentChatId(chatId));
     }
 
     return {initSocketConnection, handleSendMessage, handleGetChats, handleOpenChat};

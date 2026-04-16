@@ -10,7 +10,7 @@ export const sendMessage = async(req, res) => {
         return res.status(400).json({
             success: false,
             message: "Can't send empty message",
-            err: "Empty message"
+            err: "empty message"
         });
     }
 
@@ -45,15 +45,15 @@ export const sendMessage = async(req, res) => {
         });
 
         const response = await generateResponse(messages);
-        const result = response.messages[ response.messages.length-1 ].content;
+        const lastMessage = response.messages[ response.messages.length-1 ].content;
 
         const aiMessage = await messageModel.create({
             chat: chatId || chat._id,
-            content: result,
+            content: lastMessage,
             role: "ai"
         });
 
-        messages.push(new AIMessage(result));
+        messages.push(new AIMessage(lastMessage));
 
         res.status(200).json({
             success: true,
