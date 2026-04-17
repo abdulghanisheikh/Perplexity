@@ -70,6 +70,30 @@ export const sendMessage = async(req, res) => {
     }
 }
 
+export const startNewChat = async(req, res) => {
+    try {
+        const chat = await chatModel.create({ user: req.user.id });
+
+        res.status(200).json({
+            success: true,
+            message: "new chat created",
+            newChat: chat
+        });
+    } catch(err) {
+        return res.status(409).json({
+            success: false,
+            message: "create chat operation failed",
+            error: err.message
+        });
+    }
+
+    res.status(201).json({
+        success: true,
+        message: "chat created",
+        newChat: chat
+    });
+}
+
 export const getChats = async(req, res) => {
     const user = req.user;
     const chats = await chatModel.find({user: user.id});

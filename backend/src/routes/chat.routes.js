@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getChats, sendMessage, getMessages, deleteChat } from "../controllers/chat.controller.js";
+import { getChats, sendMessage, getMessages, deleteChat, startNewChat } from "../controllers/chat.controller.js";
 import { authUser } from "../middlewares/authUser.middleware.js";
 
 const chatRouter = Router();
@@ -10,6 +10,13 @@ const chatRouter = Router();
  * @access private
  */
 chatRouter.post("/message", authUser, sendMessage);
+
+/**
+ * @route POST /api/chats/new
+ * @description creates new chat
+ * @access
+ */
+chatRouter.post("/new", authUser, startNewChat);
 
 /**
  * @route GET /api/chats/

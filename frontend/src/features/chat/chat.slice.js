@@ -28,7 +28,12 @@ const chatSlice = createSlice({
         },
         addMessages: (state, action) => {
             const {chatId, messages} = action.payload;
-            
+        
+            // re-initialize message state after refresh
+            if(!state.message[chatId]) {
+                state.message[chatId] = [];
+            }
+
             state.message[chatId].push(...messages);
         },
         setChats: (state, action) => {

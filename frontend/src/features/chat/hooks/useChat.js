@@ -1,7 +1,7 @@
 import { initSocketConnection } from "../services/chat.socket";
-import { sendMessage, getChats, getMessages } from "../services/chat.api.js";
+import { sendMessage, getChats, getMessages, startNewChat } from "../services/chat.api.js";
 import {useDispatch} from "react-redux";
-import {setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages} from "../chat.slice.js";
+import {setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages, setChats} from "../chat.slice.js";
 
 export const useChat = () => {
     const dispatch = useDispatch();
@@ -15,18 +15,18 @@ export const useChat = () => {
 
             if(success) {
                 const activeChatId = chatId || chat._id;
-                dispatch(setCurrentChatId(activeChatId));
 
                 // create new chat if NO chatId
                 if(!chatId) {
+                    dispatch(setCurrentChatId(activeChatId));
                     dispatch(createNewChat({chatId: chat._id, title: chat.title}));
                 }
 
                 // user message added
-                dispatch(addNewMessage({chatId: chatId || chat._id, role: "user", content: message}));
+                dispatch(addNewMessage({chatId: activeChatId, role: "user", content: message}));
 
                 // AI message added
-                dispatch(addNewMessage({chatId: chatId || chat._id, role: aiMessage.role, content: aiMessage.content}));
+                dispatch(addNewMessage({chatId: activeChatId, role: aiMessage.role, content: aiMessage.content}));
             }
 
         } catch(err) {
@@ -44,12 +44,22 @@ export const useChat = () => {
             const {success, chats} = data;
 
             if(success) {
-                chats.forEach((chat) => {
-                    dispatch(createNewChat({chatId: chat._id, title: chat.title}));
-                });
+                const allChats = chats.reduce((acc, chat) => {
+                    const {_id, user, title} = chat;
+
+                    acc[_id] = {
+                        user,
+                        title,
+                        updatedOn: new Date().toISOString()
+                    }
+
+                    return acc;
+                }, {});
+
+                dispatch(setChats(allChats));
             }
         } catch(err) {
-            setError(dispatch(err?.response?.data?.message || "fetching chats failed"));
+            dispatch(setError(err?.response?.data?.message || "fetching chats failed"));
         } finally {
             dispatch(setLoading(false));
         }
@@ -72,10 +82,35 @@ export const useChat = () => {
                     }
                 });
 
+                // all messages append at once using spread operator
                 dispatch(addMessages({chatId: activeChatId, messages: formattedMessages}));
             }
         }
     }
 
-    return {initSocketConnection, handleSendMessage, handleGetChats, handleOpenChat};
+    const handleStartNewChat = async() => {
+        try {
+            dispatch(setLoading(true));
+
+            // create new chat in DB
+            const {data} = await startNewChat();
+
+            const {success, newChat} = data;
+
+            if(success) {
+                dispatch(createNewChat({
+                    chatId: newChat._id,
+                    title: newChat.title
+                }));
+                
+                dispatch(setCurrentChatId(newChat._id));
+            }
+        } catch(err) {
+            dispatch(setError(err?.response?.data?.message || "starting new chat failed"));
+        } finally {
+            dispatch(setLoading(false)); 
+        }
+    }
+
+    return {initSocketConnection, handleSendMessage, handleGetChats, handleOpenChat, handleStartNewChat};
 }

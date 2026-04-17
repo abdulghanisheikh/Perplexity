@@ -24,3 +24,8 @@ export const deleteChat = async(chatId) => {
     const response = await api.delete(`/api/chats/delete/${chatId}`);
     return response;
 }
+
+export const startNewChat = async() => {
+    const response = await api.post("/api/chats/new");
+    return response;
+}
