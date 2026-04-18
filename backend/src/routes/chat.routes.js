@@ -37,6 +37,6 @@ chatRouter.get("/:chatId/messages", authUser, getMessages);
  * @description delete a chat
  * @access private
  */
-chatRouter.get("/delete/:chatId", authUser, deleteChat);
+chatRouter.delete("/delete/:chatId", authUser, deleteChat);
 
 export default chatRouter;

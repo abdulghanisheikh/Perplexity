@@ -1,5 +1,5 @@
 import { initSocketConnection } from "../services/chat.socket";
-import { sendMessage, getChats, getMessages, startNewChat } from "../services/chat.api.js";
+import { sendMessage, getChats, getMessages, startNewChat, deleteChat } from "../services/chat.api.js";
 import {useDispatch} from "react-redux";
 import {setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages, setChats} from "../chat.slice.js";
 
@@ -112,5 +112,23 @@ export const useChat = () => {
         }
     }
 
-    return {initSocketConnection, handleSendMessage, handleGetChats, handleOpenChat, handleStartNewChat};
+    const handleDeleteChat = async(chatId) => {
+        try {
+            dispatch(setLoading(true));
+
+            const {data} = await deleteChat(chatId);
+
+            const {success} = data;
+
+            if(success) {
+                dispatch(setCurrentChatId(""));
+            }
+        } catch(err) {
+            dispatch(setError(err?.response?.data?.message || "chat delete operation failed"));
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }
+ 
+    return {initSocketConnection, handleSendMessage, handleGetChats, handleOpenChat, handleStartNewChat, handleDeleteChat};
 }

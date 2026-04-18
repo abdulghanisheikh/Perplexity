@@ -23,6 +23,15 @@ export const sendMessage = async(req, res) => {
             title: chatTitle,
             user: req.user.id
         });
+    } else {
+        const chat = await chatModel.findById(chatId);
+
+        if(chat.title === "Untitled chat") {
+            chatTitle = await generateChatTitle(message);
+            chat.title = chatTitle;
+
+            await chat.save();
+        }
     }
 
     // fetching all messages of this chat
@@ -137,7 +146,7 @@ export const getMessages = async(req, res) => {
 }
 
 export const deleteChat = async(req, res) => {
-    const chatId = req.params;
+    const {chatId} = req.params;
     
     // chat delete
     const chat = await chatModel.findOneAndDelete({

@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar.jsx";
 import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import { IoMdAdd } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
 
 const Dashboard = () => {
     const [userMessage, setUserMessage] = useState('');
@@ -36,6 +37,11 @@ const Dashboard = () => {
         setUserMessage("");
     }
 
+    const handleDeleteChatClick = async(chatId) => {
+        await chat.handleDeleteChat(chatId);
+        await chat.handleGetChats();
+    }
+
     useEffect(() => {
         chat.initSocketConnection();
         chat.handleGetChats();
@@ -43,31 +49,46 @@ const Dashboard = () => {
 
     return <main className="bg-neutral-950 flex h-screen w-screen text-white">
 
-        <aside className="w-[25%] p-3 flex flex-col gap-8 bg-neutral-900 rounded-md">    
+        <aside className="w-[25%] p-3 flex flex-col gap-8 bg-neutral-900 rounded-md">  
+            {/* navbar */}
             <Navbar click={handleLogoutClick} />
 
+            {/* new chat button */}
             <div
             onClick={chat.handleStartNewChat}
-            className="chat hover:scale-101 border flex justify-center items-center border-white/50 duration-300 ease-in-out cursor-pointer w-[90%] self-center rounded-xl hover:bg-neutral-800 px-5 py-1.5 overflow-x-hidden">
+            className="chat hover:scale-101 border border-white/50 flex justify-center items-center duration-300 ease-in-out cursor-pointer w-[90%] self-center rounded-xl hover:bg-neutral-800 py-1.5 overflow-x-hidden gap-1">
                 <p>New Chat</p>
                 <IoMdAdd />
             </div>
 
-            <div className="chats flex flex-col gap-2 px-3">
-                <p className="text-sm opacity-30">Recent Chats</p>
+            {/* chats */}
+            <div className="chats flex flex-col items-center gap-2">
+
+                <p className="text-sm opacity-40 self-start pl-5">Recent Chats</p>
 
                 {chatList && Object.keys(chatList).map((chatId) => {
                     return <div
-                    onClick={() => {
-                        if(chatId === currentChatId) return;
-                        chat.handleOpenChat({activeChatId: chatId, message: msgObj});
-                    }}
-                    key={chatId} className={`
-                    chat hover:scale-101 border border-white/50 duration-300 ease-in-out cursor-pointer w-full rounded-xl hover:bg-neutral-900 px-5 py-2 overflow-x-hidden
-                    ${currentChatId === chatId ? "bg-neutral-800" : "bg-neutral-900"}
-                    `}>
-                        <p className="lg:text-sm text-xs">{chatList[chatId].title}</p>
-                    </div>
+                    key={chatId}
+                    className="chat flex items-center w-[90%] gap-5">
+
+                        <div
+                        className={`hover:scale-101 duration-300 ease-in-out cursor-pointer w-[80%] h-8 rounded-lg flex items-center px-2 py-0.5 overflow-x-hidden ${currentChatId === chatId ? 'bg-neutral-800' : 'bg-neutral-900'}`}
+                        style={{
+                            scrollbarWidth: "none"
+                        }}
+                        onClick={() => {
+                            if(chatId === currentChatId) return;
+                            chat.handleOpenChat({activeChatId: chatId, message: msgObj});
+                        }}>
+                            <p className="lg:text-sm text-xs">{chatList[chatId].title}</p>
+                        </div>
+
+                        <div 
+                        onClick={() => handleDeleteChatClick(chatId)}
+                        className="hover:bg-neutral-800 active:scale-90 p-1.5 cursor-pointer duration-300 ease-in-out rounded-full">
+                            <MdDelete />
+                        </div>
+                </div>
                 })}
             </div>
 
@@ -101,7 +122,7 @@ const Dashboard = () => {
             })}
 
             <footer>
-                <form onSubmit={handleSendMessageClick} className="userInput w-2/3 flex gap-3 justify-center rounded-lg fixed bottom-5 right-12 px-3">
+                <form onSubmit={handleSendMessageClick} className="userInput w-2/3 flex gap-3 justify-center rounded-lg fixed bottom-5 right-15 px-3">
                     <input type="text" value={userMessage} onChange={(e) => setUserMessage(e.target.value)} placeholder="Type your message" className="w-[85%] py-3 text-sm bg-neutral-950 border border-white/50 outline-none hover:bg-neutral-900 duration-300 ease-in-out px-2 rounded-lg" />
                     
                     <button disabled={!userMessage.trim() || loading} type="submit" className={`border border-white/50 rounded-md px-5 
