@@ -72,7 +72,7 @@ const Dashboard = () => {
                     className="chat flex items-center w-[90%] gap-5">
 
                         <div
-                        className={`hover:scale-101 duration-300 ease-in-out cursor-pointer w-[80%] h-8 rounded-lg flex items-center px-2 py-0.5 overflow-x-hidden ${currentChatId === chatId ? 'bg-neutral-800' : 'bg-neutral-900'}`}
+                        className={`hover:scale-101 duration-300 ease-in-out cursor-pointer w-[80%] h-8 rounded-lg flex items-center px-2 py-0.5 truncate ${currentChatId === chatId ? 'bg-neutral-800' : 'bg-neutral-900'}`}
                         style={{
                             scrollbarWidth: "none"
                         }}
