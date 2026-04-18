@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
+import WelcomeScreen from "../components/WelcomeScreen.jsx";
 
 const Dashboard = () => {
     const [userMessage, setUserMessage] = useState('');
@@ -15,6 +16,7 @@ const Dashboard = () => {
     const auth = useAuth();
     const chat = useChat();
 
+    const username = useSelector(state => state.auth.user.username);
     const loading = useSelector(state => state.chat.loading);
     const chatList = useSelector(state => state.chat.chats);
     const currentChatId = useSelector(state => state.chat.currentChatId);
@@ -42,13 +44,20 @@ const Dashboard = () => {
         await chat.handleGetChats();
     }
 
+    const initDashboard = async() => {
+        await Promise.all([
+            chat.initSocketConnection(),
+            chat.handleGetChats()
+        ]);
+    }
+
     useEffect(() => {
-        chat.initSocketConnection();
-        chat.handleGetChats();
+        initDashboard();
     }, []);
 
     return <main className="bg-neutral-950 flex h-screen w-screen text-white">
 
+        {/* navbar and chats list */}
         <aside className="w-[25%] p-3 flex flex-col gap-8 bg-neutral-900 rounded-md">  
             {/* navbar */}
             <Navbar click={handleLogoutClick} />
@@ -94,11 +103,12 @@ const Dashboard = () => {
 
         </aside>
 
+        {/* messages */}
         <section style={{
             scrollbarWidth: 'none'
-        }} className="chatting min-h-screen w-[75%] overflow-y-auto relative py-5 px-45 flex flex-col gap-3 pb-20">
+        }} className="chatting min-h-screen w-[75%] overflow-y-auto relative flex flex-col items-center px-40 py-5 gap-3 pb-20">
 
-            {messages && messages.map((msg, index) => {
+            {messages && messages.length > 0 ? messages.map((msg, index) => {
                 return <div key={index} className={`user p-2 rounded-lg text-sm
                 ${msg.role === "ai" ? 
                 "w-[75%] self-start" : 
@@ -119,7 +129,9 @@ const Dashboard = () => {
                         </ReactMarkdown>
                     )}
                 </div>
-            })}
+            }) : (
+                <WelcomeScreen username={username} />
+            )}
 
             <footer>
                 <form onSubmit={handleSendMessageClick} className="userInput w-2/3 flex gap-3 justify-center rounded-lg fixed bottom-5 right-15 px-3">
