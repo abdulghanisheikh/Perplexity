@@ -91,7 +91,7 @@ const Dashboard = () => {
                             ul: ({children}) => <p className="mb-2 list-disc pl-5">{children}</p>,
                             ol: ({children}) => <p className="mb-2 list-decimal pl-5">{children}</p>,
                             code: ({children}) => <code className="rounded bg-white/10 px-1 py-0.5">{children}</code>,
-                            pre: ({children}) => <pre className="mb-2 overflow-x-auto rounded-xl bg-black/30 p-3">{children}</pre>
+                            pre: ({children}) => <pre className="mb-4 overflow-x-auto rounded-xl bg-black/30 p-3">{children}</pre>
                         }}
                         >
                             {msg.content}

@@ -16,7 +16,7 @@ export const useChat = () => {
             if(success) {
                 const activeChatId = chatId || chat._id;
 
-                // create new chat if NO chatId
+                // if No chatId is coming then create a new chat
                 if(!chatId) {
                     dispatch(setCurrentChatId(activeChatId));
                     dispatch(createNewChat({chatId: chat._id, title: chat.title}));
