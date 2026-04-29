@@ -10,7 +10,7 @@ import { MdDelete } from "react-icons/md";
 import WelcomeScreen from "../components/WelcomeScreen.jsx";
 
 const Dashboard = () => {
-    const [userMessage, setUserMessage] = useState('');
+    const [userMessage, setUserMessage] = useState("");
     const navigate = useNavigate();
 
     const auth = useAuth();

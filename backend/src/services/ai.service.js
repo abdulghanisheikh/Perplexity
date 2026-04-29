@@ -58,20 +58,14 @@ const agent = createReactAgent({
     Use web search when you need current or real-time information.`
 });
 
-export const generateResponse = async(messages) => {
-    const response = await agent.invoke({messages});
-    return response;
+export const generateResponse = async (messages) => {
+    const stream = await agent.stream(
+        {messages},
+        {streamMode: "messages"}
+    );
+    
+    return stream;
 }
-
-// const stream = await agent.stream(
-//   {
-//     messages: [{
-//       role: "user",
-//       content: "Search for AI news and summarize the findings"
-//     }],
-//   },
-//   { streamMode: "values" }
-// );
 
 export const generateChatTitle = async(message) => {
     const response = await mistralModel.invoke([

@@ -4,7 +4,8 @@ import chatModel from "../models/chat.model.js";
 import messageModel from "../models/message.model.js";
 
 export const sendMessage = async(req, res) => {
-    let {message, chatId} = req.body;
+    let message = req.body.message;
+    let chatId = req.body.chatId;
 
     if(!message) {
         return res.status(400).json({
@@ -19,10 +20,12 @@ export const sendMessage = async(req, res) => {
     // first message on the chat
     if(!chatId) {
         chatTitle = await generateChatTitle(message);
+
         chat = await chatModel.create({
             title: chatTitle,
             user: req.user.id
         });
+
     } else {
         const chat = await chatModel.findById(chatId);
 
@@ -53,8 +56,34 @@ export const sendMessage = async(req, res) => {
             role: "user"
         });
 
-        const response = await generateResponse(messages);
-        const lastMessage = response.messages[ response.messages.length-1 ].content;
+        const responseStream = await generateResponse(messages);
+        let lastMessage = "";
+        let firstChunk = false;
+        
+        for await (const [token] of responseStream) {
+
+            const chunk = token?.contentBlocks[0]?.text;
+
+            if(!firstChunk) {
+                firstChunk = true;
+
+                res.status(200).write(`data: ${JSON.stringify({
+                    success: true,
+                    message: "AI response generated",
+                    token: chunk,
+                    chat
+                })}\n\n`);
+
+            } else {
+                res.status(200).write(`data: ${JSON.stringify({token: chunk})}\n\n`);
+            }
+
+            lastMessage += chunk;
+        }
+
+        // chunks finished and stream connection closed
+        res.status(200).write(`data: ${JSON.stringify({done: true})}\n\n`);
+        res.end();
 
         const aiMessage = await messageModel.create({
             chat: chatId || chat._id,
@@ -63,13 +92,6 @@ export const sendMessage = async(req, res) => {
         });
 
         messages.push(new AIMessage(lastMessage));
-
-        res.status(200).json({
-            success: true,
-            message: "Response generated",
-            aiMessage,
-            chat
-        });
     } catch(err) {
         return res.status(500).json({
             success: false,

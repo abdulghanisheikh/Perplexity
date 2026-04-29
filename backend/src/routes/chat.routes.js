@@ -6,7 +6,7 @@ const chatRouter = Router();
 
 /**
  * @route POST /api/chats/message
- * @description sends user message and get back the AI response
+ * @description sends user message and get back the ai response
  * @access private
  */
 chatRouter.post("/message", authUser, sendMessage);
