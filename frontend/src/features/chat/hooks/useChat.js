@@ -1,7 +1,6 @@
-import { initSocketConnection } from "../services/chat.socket";
 import { sendMessage, getChats, getMessages, startNewChat, deleteChat } from "../services/chat.api.js";
 import {useDispatch} from "react-redux";
-import {setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages, setChats} from "../chat.slice.js";
+import {setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages, setChats, appendToken} from "../chat.slice.js";
 
 export const useChat = () => {
     const dispatch = useDispatch();
@@ -9,26 +8,54 @@ export const useChat = () => {
     const handleSendMessage = async({message, chatId}) => {
         try {
             dispatch(setLoading(true));
-            
-            const {data} = await sendMessage({message, chatId});
-            const {success, aiMessage, chat} = data;
 
-            if(success) {
-                const activeChatId = chatId || chat._id;
-
-                // if No chatId is coming then create a new chat
-                if(!chatId) {
-                    dispatch(setCurrentChatId(activeChatId));
-                    dispatch(createNewChat({chatId: chat._id, title: chat.title}));
-                }
-
-                // user message added
-                dispatch(addNewMessage({chatId: activeChatId, role: "user", content: message}));
-
-                // AI message added
-                dispatch(addNewMessage({chatId: activeChatId, role: aiMessage.role, content: aiMessage.content}));
+            if(chatId) {
+                dispatch(addNewMessage({chatId, role: "user", content: message}));
             }
 
+            const res = await sendMessage({message, chatId});
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+
+            let activeChatId = chatId;
+
+            while(true) {
+                const {done, value} = await reader.read();
+
+                if(done) break;
+
+                const chunk = decoder.decode(value, {stream: true});
+                const lines = chunk.split("\n").filter(line => line.startsWith("data:"));
+
+                for(const line of lines) {
+                    const data = JSON.parse(line.replace("data: ", ""));
+
+                    if(data.done) {
+                        dispatch(setLoading(false));
+                    }
+
+                    // first chunk
+                    if(data.chat) {
+                        activeChatId = data.chat._id;
+
+                        // if no chatId => create new chat
+                        if(!chatId) {
+                            dispatch(setCurrentChatId(activeChatId));
+                            dispatch(createNewChat({chatId: activeChatId, title: data.chat.title}));
+                        }
+
+                        dispatch(addNewMessage({chatId: activeChatId, role: "user", content: message}));
+                        dispatch(addNewMessage({chatId: activeChatId, role: "ai", content: ""}));
+                        dispatch(appendToken({chatId: activeChatId, token: data.token}));
+
+                    } 
+                    // rest chunks
+                    else if(data.token) {
+                        dispatch(appendToken({chatId: activeChatId, token: data.token}));
+                    }
+                }
+            }
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "send message error"));
         } finally {
@@ -130,5 +157,5 @@ export const useChat = () => {
         }
     }
  
-    return {initSocketConnection, handleSendMessage, handleGetChats, handleOpenChat, handleStartNewChat, handleDeleteChat};
+    return {handleSendMessage, handleGetChats, handleOpenChat, handleStartNewChat, handleDeleteChat};
 }

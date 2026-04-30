@@ -8,12 +8,18 @@ export const sendMessage = async(req, res) => {
     let chatId = req.body.chatId;
 
     if(!message) {
-        return res.status(400).json({
+        res.status(400);
+        return res.write(`data: ${JSON.stringify({
             success: false,
             message: "Can't send empty message",
             err: "empty message"
-        });
+        })}\n\n`);
     }
+
+    // setting headers to enable streaming
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
     let chatTitle = null, chat = null;
 
@@ -58,31 +64,30 @@ export const sendMessage = async(req, res) => {
 
         const responseStream = await generateResponse(messages);
         let lastMessage = "";
-        let firstChunk = false;
+        let firstChunk = true;
         
         for await (const [token] of responseStream) {
 
             const chunk = token?.contentBlocks[0]?.text;
 
-            if(!firstChunk) {
-                firstChunk = true;
+            if(firstChunk) {
+                firstChunk = false;
 
-                res.status(200).write(`data: ${JSON.stringify({
-                    success: true,
-                    message: "AI response generated",
-                    token: chunk,
-                    chat
+                res.status(200);
+                res.write(`data: ${JSON.stringify({
+                    chat,
+                    token: chunk
                 })}\n\n`);
 
             } else {
-                res.status(200).write(`data: ${JSON.stringify({token: chunk})}\n\n`);
+                res.write(`data: ${JSON.stringify({token: chunk})}\n\n`);
             }
 
             lastMessage += chunk;
         }
 
         // chunks finished and stream connection closed
-        res.status(200).write(`data: ${JSON.stringify({done: true})}\n\n`);
+        res.write(`data: ${JSON.stringify({done: true})}\n\n`);
         res.end();
 
         const aiMessage = await messageModel.create({
@@ -93,11 +98,12 @@ export const sendMessage = async(req, res) => {
 
         messages.push(new AIMessage(lastMessage));
     } catch(err) {
-        return res.status(500).json({
+        res.status(500);
+        return res.write(`data: ${JSON.stringify({
             success: false,
             message: "Server error",
             err: err.message
-        });
+        })}\n\n`);
     }
 }
 

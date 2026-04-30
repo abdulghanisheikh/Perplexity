@@ -6,7 +6,15 @@ const api = new axios.create({
 });
 
 export const sendMessage = async({message, chatId = ""}) => {
-    const response = await api.post("/api/chats/message", {message, chatId});
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/chats/message`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ message, chatId })
+    });
+    
     return response;
 }
 

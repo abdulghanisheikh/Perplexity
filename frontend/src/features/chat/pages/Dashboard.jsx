@@ -34,9 +34,8 @@ const Dashboard = () => {
         const trimmedMessage = userMessage.trim();
         if(trimmedMessage === "") return;
 
-        await chat.handleSendMessage({message: trimmedMessage, chatId: currentChatId});
-
         setUserMessage("");
+        await chat.handleSendMessage({message: trimmedMessage, chatId: currentChatId});
     }
 
     const handleDeleteChatClick = async(chatId) => {
@@ -44,11 +43,8 @@ const Dashboard = () => {
         await chat.handleGetChats();
     }
 
-    const initDashboard = async() => {
-        await Promise.all([
-            chat.initSocketConnection(),
-            chat.handleGetChats()
-        ]);
+    const initDashboard = async () => {
+        await chat.handleGetChats();
     }
 
     useEffect(() => {
