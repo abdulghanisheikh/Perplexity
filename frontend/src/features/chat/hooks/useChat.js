@@ -43,13 +43,13 @@ export const useChat = () => {
                         if(!chatId) {
                             dispatch(setCurrentChatId(activeChatId));
                             dispatch(createNewChat({chatId: activeChatId, title: data.chat.title}));
+                            dispatch(addNewMessage({chatId: activeChatId, role: "user", content: message}));
                         }
 
-                        dispatch(addNewMessage({chatId: activeChatId, role: "user", content: message}));
                         dispatch(addNewMessage({chatId: activeChatId, role: "ai", content: ""}));
                         dispatch(appendToken({chatId: activeChatId, token: data.token}));
 
-                    } 
+                    }
                     // rest chunks
                     else if(data.token) {
                         dispatch(appendToken({chatId: activeChatId, token: data.token}));

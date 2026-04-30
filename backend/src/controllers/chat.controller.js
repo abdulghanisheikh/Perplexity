@@ -33,7 +33,7 @@ export const sendMessage = async(req, res) => {
         });
 
     } else {
-        const chat = await chatModel.findById(chatId);
+        chat = await chatModel.findById(chatId);
 
         if(chat.title === "Untitled chat") {
             chatTitle = await generateChatTitle(message);

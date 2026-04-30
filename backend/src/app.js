@@ -18,7 +18,7 @@ app.use(cors({
     methods: ["GET", "POST", "PATCH", "DELETE"]
 }));
 
-// Health check
+// health check
 app.get("/health", (req, res) => {
     res.json({ message: "Server is running" });
 });
