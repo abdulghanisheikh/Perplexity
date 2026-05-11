@@ -7,8 +7,9 @@ import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
-import Loading from "../components/Loading.jsx";
+import LoadingAIMessage from "../components/LoadingAIMessage.jsx";
 import WelcomeScreen from "../components/WelcomeScreen.jsx";
+import { IoMdArrowRoundUp } from "react-icons/io";
 
 const Dashboard = () => {
     const [userMessage, setUserMessage] = useState("");
@@ -103,15 +104,15 @@ const Dashboard = () => {
         {/* messages */}
         <section style={{
             scrollbarWidth: 'none'
-        }} className="chatting min-h-screen w-[75%] overflow-y-auto relative flex flex-col items-center px-40 py-5 gap-3 pb-20">
+        }} className="chatting min-h-screen w-[75%] overflow-y-auto relative flex flex-col items-center px-40 py-5 gap-3 pb-30">
 
             {messages && messages.length > 0 ? messages.map((msg, index) => {
                 return <div key={index} className={`user p-2 rounded-lg text-sm
-                ${msg.role === "ai" ? "w-[75%] self-start" : "w-fit bg-neutral-900 self-end shadow-md shadow-black/50 rounded-br-none"}`}>
+                ${msg.role === "ai" ? "w-[75%] self-start" : "w-fit bg-neutral-900 self-end shadow-md shadow-black/50 rounded-br-none mt-10"}`}>
 
                     {msg.role === "ai" ? (
                         msg.content === "LOADING" ?
-                        <Loading /> :
+                        <LoadingAIMessage /> :
                         <ReactMarkdown
                         components={{
                             p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
@@ -135,11 +136,11 @@ const Dashboard = () => {
                 <form onSubmit={handleSendMessageClick} className="userInput w-2/3 flex gap-3 justify-center rounded-lg fixed bottom-5 right-15 px-3">
                     <input type="text" value={userMessage} onChange={(e) => setUserMessage(e.target.value)} placeholder="Type your message" className="w-[85%] py-3 text-sm bg-neutral-950 border border-white/50 outline-none hover:bg-neutral-900 duration-300 ease-in-out px-2 rounded-lg" />
                     
-                    <button disabled={!userMessage.trim() || loading} type="submit" className={`border border-white/50 rounded-md px-5 
+                    <button disabled={!userMessage.trim() || loading} type="submit" className={`border border-white/50 rounded-full p-2.5 text-sky-500
                     ${!userMessage.trim() || loading ?
                     'opacity-50' : 
-                    'cursor-pointer hover:bg-neutral-900 active:scale-90 duration-300 ease-in-out'}`}>
-                        Send
+                    'cursor-pointer active:scale-90 duration-300 ease-in-out'}`}>
+                        <IoMdArrowRoundUp size={30}/>
                     </button>
                 </form>
             </footer>
