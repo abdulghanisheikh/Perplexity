@@ -32,7 +32,7 @@ const chatSlice = createSlice({
             let lastMessage = state.message[chatId][ state.message[chatId].length - 1 ];
             
             if(lastMessage.role === "ai") {
-                if(lastMessage.content === "loading") {
+                if(lastMessage.content === "LOADING") {
                     lastMessage.content = token;
                 } else {
                     lastMessage.content += token;

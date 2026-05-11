@@ -9,7 +9,7 @@ export const useChat = () => {
         try {
             dispatch(setLoading(true));
             dispatch(addNewMessage({chatId, role: "user", content: message}));
-            dispatch(addNewMessage({chatId, role: "ai", content: "loading"}));
+            dispatch(addNewMessage({chatId, role: "ai", content: "LOADING"}));
 
             const res = await sendMessage({message, chatId});
 
@@ -21,6 +21,7 @@ export const useChat = () => {
             while(true) {
                 const {done, value} = await reader.read();
 
+                // stream connection end
                 if(done) break;
 
                 const chunk = decoder.decode(value, {stream: true});

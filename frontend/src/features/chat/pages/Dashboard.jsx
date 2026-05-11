@@ -108,8 +108,9 @@ const Dashboard = () => {
             {messages && messages.length > 0 ? messages.map((msg, index) => {
                 return <div key={index} className={`user p-2 rounded-lg text-sm
                 ${msg.role === "ai" ? "w-[75%] self-start" : "w-fit bg-neutral-900 self-end shadow-md shadow-black/50 rounded-br-none"}`}>
+
                     {msg.role === "ai" ? (
-                        msg.content === "loading" ? 
+                        msg.content === "LOADING" ?
                         <Loading /> :
                         <ReactMarkdown
                         components={{
