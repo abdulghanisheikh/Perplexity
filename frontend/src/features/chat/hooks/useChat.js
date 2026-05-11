@@ -8,10 +8,8 @@ export const useChat = () => {
     const handleSendMessage = async({message, chatId}) => {
         try {
             dispatch(setLoading(true));
-
-            if(chatId) {
-                dispatch(addNewMessage({chatId, role: "user", content: message}));
-            }
+            dispatch(addNewMessage({chatId, role: "user", content: message}));
+            dispatch(addNewMessage({chatId, role: "ai", content: "loading"}));
 
             const res = await sendMessage({message, chatId});
 
@@ -46,9 +44,7 @@ export const useChat = () => {
                             dispatch(addNewMessage({chatId: activeChatId, role: "user", content: message}));
                         }
 
-                        dispatch(addNewMessage({chatId: activeChatId, role: "ai", content: ""}));
                         dispatch(appendToken({chatId: activeChatId, token: data.token}));
-
                     }
                     // rest chunks
                     else if(data.token) {

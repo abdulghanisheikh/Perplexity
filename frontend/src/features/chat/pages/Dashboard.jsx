@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
+import Loading from "../components/Loading.jsx";
 import WelcomeScreen from "../components/WelcomeScreen.jsx";
 
 const Dashboard = () => {
@@ -54,7 +55,7 @@ const Dashboard = () => {
     return <main className="bg-neutral-950 flex h-screen w-screen text-white">
 
         {/* navbar and chats list */}
-        <aside className="w-[25%] p-3 flex flex-col gap-8 bg-neutral-900 rounded-md">  
+        <aside className="w-[25%] p-3 flex flex-col gap-8 bg-neutral-900 rounded-md">
             {/* navbar */}
             <Navbar click={handleLogoutClick} />
 
@@ -106,12 +107,10 @@ const Dashboard = () => {
 
             {messages && messages.length > 0 ? messages.map((msg, index) => {
                 return <div key={index} className={`user p-2 rounded-lg text-sm
-                ${msg.role === "ai" ? 
-                "w-[75%] self-start" : 
-                "w-fit bg-neutral-900 self-end shadow-md shadow-black/50 rounded-br-none"}`}>
-                    {msg.role === "user" ? (
-                        <p>{msg.content}</p>
-                    ) : (
+                ${msg.role === "ai" ? "w-[75%] self-start" : "w-fit bg-neutral-900 self-end shadow-md shadow-black/50 rounded-br-none"}`}>
+                    {msg.role === "ai" ? (
+                        msg.content === "loading" ? 
+                        <Loading /> :
                         <ReactMarkdown
                         components={{
                             p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
@@ -123,6 +122,8 @@ const Dashboard = () => {
                         >
                             {msg.content}
                         </ReactMarkdown>
+                    ) : (
+                        <p>{msg.content}</p>
                     )}
                 </div>
             }) : (

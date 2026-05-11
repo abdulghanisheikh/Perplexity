@@ -37,7 +37,7 @@ const webSearchTool = tool(
 );
 
 const geminiModel = new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash-lite",
+    model: "gemini-3.1-flash-lite",
     apiKey: process.env.GEMINI_API_KEY,
     temperature: 0,
     maxRetries: 2
@@ -50,9 +50,8 @@ const mistralModel = new ChatMistralAI({
     maxRetries: 2
 });
 
-// Agent => LLM having access of tools
 const agent = createReactAgent({
-    llm: mistralModel,
+    llm: geminiModel,
     tools: [emailTool, webSearchTool],
     messageModifier: `You are a helpful assistant. You have access to web search and email tools. 
     Use web search when you need current or real-time information.`

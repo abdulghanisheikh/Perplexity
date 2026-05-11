@@ -7,6 +7,11 @@ export const sendMessage = async(req, res) => {
     let message = req.body.message;
     let chatId = req.body.chatId;
 
+    // setting headers to enable streaming
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
     if(!message) {
         res.status(400);
         return res.write(`data: ${JSON.stringify({
@@ -16,14 +21,9 @@ export const sendMessage = async(req, res) => {
         })}\n\n`);
     }
 
-    // setting headers to enable streaming
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-
     let chatTitle = null, chat = null;
 
-    // first message on the chat
+    // first message of chat
     if(!chatId) {
         chatTitle = await generateChatTitle(message);
 
@@ -63,11 +63,10 @@ export const sendMessage = async(req, res) => {
         });
 
         const responseStream = await generateResponse(messages);
-        let lastMessage = "";
+        let lastMessage = ""; // to store the whole message of AI coming in chunks
         let firstChunk = true;
         
         for await (const [token] of responseStream) {
-
             const chunk = token?.contentBlocks[0]?.text;
 
             if(firstChunk) {

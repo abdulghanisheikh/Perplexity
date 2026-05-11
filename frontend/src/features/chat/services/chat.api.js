@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const backendURL = import.meta.env.VITE_NODE_ENVIRONMENT === 'production' ? import.meta.env.VITE_BACKEND_URL : "http://localhost:3000";
+
 const api = new axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
+    baseURL: backendURL,
     withCredentials: true
 });
 
