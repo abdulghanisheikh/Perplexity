@@ -8,6 +8,7 @@ export const useChat = () => {
     const handleSendMessage = async({message, chatId}) => {
         try {
             dispatch(setLoading(true));
+            
             dispatch(addNewMessage({chatId, role: "user", content: message}));
             dispatch(addNewMessage({chatId, role: "ai", content: "LOADING"}));
 
@@ -40,9 +41,8 @@ export const useChat = () => {
 
                         // if no chatId => create new chat
                         if(!chatId) {
-                            dispatch(setCurrentChatId(activeChatId));
                             dispatch(createNewChat({chatId: activeChatId, title: data.chat.title}));
-                            dispatch(addNewMessage({chatId: activeChatId, role: "user", content: message}));
+                            dispatch(setCurrentChatId(activeChatId));
                         }
 
                         dispatch(appendToken({chatId: activeChatId, token: data.token}));

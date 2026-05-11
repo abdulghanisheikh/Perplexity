@@ -9,7 +9,7 @@ import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import LoadingAIMessage from "../components/LoadingAIMessage.jsx";
 import WelcomeScreen from "../components/WelcomeScreen.jsx";
-import { IoMdArrowRoundUp } from "react-icons/io";
+import InputBox from "../components/InputBox.jsx";
 
 const Dashboard = () => {
     const [userMessage, setUserMessage] = useState("");
@@ -132,18 +132,12 @@ const Dashboard = () => {
                 <WelcomeScreen username={username} />
             )}
 
-            <footer>
-                <form onSubmit={handleSendMessageClick} className="userInput w-2/3 flex gap-3 justify-center rounded-lg fixed bottom-5 right-15 px-3">
-                    <input type="text" value={userMessage} onChange={(e) => setUserMessage(e.target.value)} placeholder="Type your message" className="w-[85%] py-3 text-sm bg-neutral-950 border border-white/50 outline-none hover:bg-neutral-900 duration-300 ease-in-out px-2 rounded-lg" />
-                    
-                    <button disabled={!userMessage.trim() || loading} type="submit" className={`border border-white/50 rounded-full p-2.5 text-sky-500 bg-neutral-950
-                    ${!userMessage.trim() || loading ?
-                    'opacity-50' : 
-                    'cursor-pointer active:scale-90 duration-300 ease-in-out'}`}>
-                        <IoMdArrowRoundUp size={30}/>
-                    </button>
-                </form>
-            </footer>
+            {/* fixed user input box */}
+            <InputBox
+            handleSendMessage={handleSendMessageClick}
+            userMessage={userMessage} 
+            setUserMessage={setUserMessage}
+            loading={loading} />
 
         </section>
     </main>

@@ -5,9 +5,9 @@ const LoadingAIMessage = () => {
     const paraReference = useRef(null);
 
     const showWords = () => {
-        const words = ["Generating..", "Searching..", "Analyzing..", "Please wait.."];
+        const words = ["Generating...", "Searching...", "Analyzing...", "Please wait..."];
         let para = paraReference.current;
-        para.innerText = "Thinking..";
+        para.innerText = "Thinking...";
         let index = 0;
 
         setInterval(() => {
