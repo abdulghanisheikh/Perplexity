@@ -1,9 +1,24 @@
-import React from 'react';
+import {useRef, useEffect} from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Loading = () => {
 
-    const loadingWords = ["Thinking", "Generating"];
+    const paraReference = useRef(null);
+
+    const showWords = () => {
+        const words = ["Thinking..", "Generating..", "Searching..", "Analyzing..", "Please wait.."];
+        let para = paraReference.current;
+        let index = 0;
+
+        setInterval(() => {
+            para.innerText = words[index];
+            index = (index + 1) % words.length;
+        }, 2000);
+    }
+
+    useEffect(() => {
+        showWords();
+    }, []);
 
     return (
         <div className='flex items-center'>
@@ -14,7 +29,7 @@ const Loading = () => {
                     autoplay
                 />
             </div>
-            <p className='text-gray-400'>Thinking...</p>
+            <p ref={paraReference} className='text-gray-400'></p>
         </div>
     )
 }

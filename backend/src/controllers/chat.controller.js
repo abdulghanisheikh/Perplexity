@@ -122,12 +122,6 @@ export const startNewChat = async(req, res) => {
             error: err.message
         });
     }
-
-    res.status(201).json({
-        success: true,
-        message: "chat created",
-        newChat: chat
-    });
 }
 
 export const getChats = async(req, res) => {
