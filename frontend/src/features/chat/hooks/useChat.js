@@ -1,6 +1,7 @@
 import { sendMessage, getChats, getMessages, startNewChat, deleteChat } from "../services/chat.api.js";
 import {useDispatch} from "react-redux";
 import {setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages, setChats, appendToken} from "../chat.slice.js";
+import { toast } from "react-toastify";
 
 export const useChat = () => {
     const dispatch = useDispatch();
@@ -55,6 +56,7 @@ export const useChat = () => {
             }
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "send message error"));
+            toast.error(err?.response?.data?.message || "send message error");
         } finally {
             dispatch(setLoading(false));
         }
@@ -82,6 +84,8 @@ export const useChat = () => {
 
                 dispatch(setChats(allChats));
             }
+
+            return chats;
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "fetching chats failed"));
         } finally {
@@ -89,7 +93,7 @@ export const useChat = () => {
         }
     }
 
-    const handleOpenChat = async({activeChatId, message}) => {
+    const handleOpenChat = async({activeChatId = "", message}) => {
         dispatch(setCurrentChatId(activeChatId));
 
         // if no messages are fetched => fetch messages and append
@@ -132,7 +136,7 @@ export const useChat = () => {
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "starting new chat failed"));
         } finally {
-            dispatch(setLoading(false)); 
+            dispatch(setLoading(false));
         }
     }
 

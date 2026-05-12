@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import Sidebar from "../components/Sidebar.jsx";
 import ChatInterface from "../components/ChatInterface.jsx";
 import WelcomeScreen from "../components/WelcomeScreen.jsx";
+import {ToastContainer} from "react-toastify";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -42,9 +43,9 @@ const Dashboard = () => {
     }
 
     const initDashboard = async () => {
-        await chat.handleGetChats();
+        const chatsArray = await chat.handleGetChats();
 
-        if(currentChatId === "") {
+        if(!chatsArray || chatsArray.length === 0) {
             await chat.handleStartNewChat();
         }
     }
@@ -82,7 +83,8 @@ const Dashboard = () => {
                 loading={loading}
                 />
             )
-        }  
+        }
+        <ToastContainer position="top-right" />
     </main>
 }
 
