@@ -2,7 +2,7 @@ import { MdDelete } from "react-icons/md";
 import Navbar from "./Navbar";
 import { IoMdAdd } from "react-icons/io";
 
-const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, msgObj, handleDeleteChatClick}) => {
+const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, messagesObject, handleDeleteChatClick}) => {
 
     return <aside className="min-w-[25%] p-3 flex flex-col gap-8 bg-neutral-900 rounded-md">
         {/* navbar */}
@@ -31,10 +31,8 @@ const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, msgObj, hand
                     style={{
                         scrollbarWidth: "none"
                     }}
-                    onClick={() => {
-                        if(chatId === currentChatId) return;
-                        chat.handleOpenChat({activeChatId: chatId, message: msgObj});
-                    }}>
+                    onClick={() => chat.handleOpenChat({activeChatId: chatId, message: messagesObject})}
+                    >
                         <p className="lg:text-sm text-xs">{chatList[chatId].title}</p>
                     </div>
 

@@ -20,7 +20,7 @@ const Dashboard = () => {
     const currentChatId = useSelector(state => state.chat.currentChatId);
     const messages = useSelector(state => state.chat.message[currentChatId]);
     const chatList = useSelector(state => state.chat.chats);
-    const msgObj = useSelector(state => state.chat.message);
+    const messagesObject = useSelector(state => state.chat.message);
 
     const handleSendMessageClick = async(e) => {
         e.preventDefault();
@@ -45,6 +45,7 @@ const Dashboard = () => {
     const initDashboard = async () => {
         const chatsArray = await chat.handleGetChats();
 
+        // if no chats -> create a default new chat
         if(!chatsArray || chatsArray.length === 0) {
             await chat.handleStartNewChat();
         }
@@ -59,7 +60,7 @@ const Dashboard = () => {
         <Sidebar
         chat={chat} 
         handleDeleteChatClick={handleDeleteChatClick} 
-        msgObj={msgObj} 
+        messagesObject={messagesObject} 
         handleLogoutClick={handleLogoutClick}
         chatList={chatList} 
         currentChatId={currentChatId}

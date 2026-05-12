@@ -83,6 +83,7 @@ export const useChat = () => {
                 }, {});
 
                 dispatch(setChats(allChats));
+                dispatch(setCurrentChatId(chats[chats.length - 1]._id));
             }
 
             return chats;
@@ -93,7 +94,7 @@ export const useChat = () => {
         }
     }
 
-    const handleOpenChat = async({activeChatId = "", message}) => {
+    const handleOpenChat = async({activeChatId, message}) => {
         dispatch(setCurrentChatId(activeChatId));
 
         // if no messages are fetched => fetch messages and append
