@@ -43,6 +43,10 @@ const Dashboard = () => {
 
     const initDashboard = async () => {
         await chat.handleGetChats();
+
+        if(currentChatId === "") {
+            await chat.handleStartNewChat();
+        }
     }
 
     useEffect(() => {
@@ -60,8 +64,7 @@ const Dashboard = () => {
         currentChatId={currentChatId}
         />
 
-        {
-            messages && messages.length > 0 ?
+        {messages && messages.length > 0 ?
             (
                 <ChatInterface
                 messages={messages}
