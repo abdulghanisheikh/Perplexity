@@ -17,9 +17,9 @@ app.use(morgan("dev"));
 
 if(process.env.NODE_ENVIRONMENT === "development") {
     app.use(cors({
-        origin: process.env.FRONTEND_URL,
-        credentials: true,
-        methods: ["GET", "POST"]
+        origin: "http://localhost:3000",
+        methods: ["POST", "GET"],
+        credentials: true
     }));
 }
 
