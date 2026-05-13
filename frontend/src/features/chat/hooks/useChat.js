@@ -34,6 +34,7 @@ export const useChat = () => {
 
                     if(data.done) {
                         dispatch(setLoading(false));
+                        return;
                     }
 
                     // first chunk
@@ -83,9 +84,6 @@ export const useChat = () => {
                 }, {});
 
                 dispatch(setChats(allChats));
-
-                // select last chat
-                dispatch(setCurrentChatId(chats[chats.length - 1]._id));
             }
 
             return chats;
