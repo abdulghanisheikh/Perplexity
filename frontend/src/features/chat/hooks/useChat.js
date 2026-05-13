@@ -83,6 +83,8 @@ export const useChat = () => {
                 }, {});
 
                 dispatch(setChats(allChats));
+
+                // select last chat
                 dispatch(setCurrentChatId(chats[chats.length - 1]._id));
             }
 
@@ -154,6 +156,7 @@ export const useChat = () => {
             }
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "chat delete operation failed"));
+            toast.error(err.response?.data?.message || "error while deleting the chat");
         } finally {
             dispatch(setLoading(false));
         }

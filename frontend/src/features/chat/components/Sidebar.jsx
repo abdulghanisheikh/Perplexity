@@ -4,27 +4,27 @@ import { IoMdAdd } from "react-icons/io";
 
 const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, messagesObject, handleDeleteChatClick}) => {
 
-    return <aside className="min-w-[25%] p-3 flex flex-col gap-8 bg-neutral-900 rounded-md">
+    return <aside className="min-w-[25%] flex flex-col gap-8 bg-neutral-900 rounded-md">
         {/* navbar */}
         <Navbar click={handleLogoutClick} />
 
         {/* new chat button */}
         <div
         onClick={chat.handleStartNewChat}
-        className="chat hover:scale-101 border border-white/50 flex justify-center items-center duration-300 ease-in-out cursor-pointer w-[90%] self-center rounded-xl hover:bg-neutral-800 py-1.5 overflow-x-hidden gap-1">
+        className="chat hover:scale-101 border border-white/50 flex justify-center items-center duration-300 ease-in-out cursor-pointer w-[80%] self-center rounded-xl hover:bg-neutral-800 py-1.5 overflow-x-hidden gap-1">
             <p>New Chat</p>
             <IoMdAdd />
         </div>
 
         {/* chats */}
-        <div className="chats flex flex-col items-center gap-2">
+        <div className="chats flex flex-col w-full py-2 px-4 gap-2">
 
-            <p className="text-sm opacity-40 self-start pl-5">Recent Chats</p>
+            <p className="text-sm opacity-40">Recent Chats</p>
 
             {chatList && Object.keys(chatList).reverse().map((chatId) => {
                 return <div
                 key={chatId}
-                className="chat flex items-center w-[90%] gap-5">
+                className="chat flex gap-3">
 
                     <div
                     className={`hover:scale-101 duration-300 ease-in-out cursor-pointer w-[80%] h-8 rounded-lg flex items-center px-2 py-0.5 truncate ${currentChatId === chatId ? 'bg-neutral-800' : 'bg-neutral-900'}`}
@@ -33,12 +33,12 @@ const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, messagesObje
                     }}
                     onClick={() => chat.handleOpenChat({activeChatId: chatId, message: messagesObject})}
                     >
-                        <p className="lg:text-sm text-xs">{chatList[chatId].title}</p>
+                        <p className="text-xs">{chatList[chatId].title}</p>
                     </div>
 
                     <div 
                     onClick={() => handleDeleteChatClick(chatId)}
-                    className="hover:bg-neutral-800 active:scale-90 p-1.5 cursor-pointer duration-300 ease-in-out rounded-full">
+                    className="hover:bg-neutral-800 active:scale-90 py-1.5 px-2 cursor-pointer duration-300 ease-in-out rounded-full">
                         <MdDelete />
                     </div>
             </div>

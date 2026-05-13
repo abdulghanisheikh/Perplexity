@@ -39,19 +39,23 @@ const Dashboard = () => {
 
     const handleDeleteChatClick = async(chatId) => {
         await chat.handleDeleteChat(chatId);
-        await chat.handleGetChats();
-    }
+        const updatedChats = await chat.handleGetChats();
 
-    const initDashboard = async () => {
-        const chatsArray = await chat.handleGetChats();
-
-        // if no chats -> create a default new chat
-        if(!chatsArray || chatsArray.length === 0) {
+        if(!updatedChats || updatedChats.length === 0) {
             await chat.handleStartNewChat();
         }
     }
 
     useEffect(() => {
+        const initDashboard = async() => {
+            const updatedChats = await chat.handleGetChats();
+
+            // if no chats -> create a default new chat
+            if(!updatedChats || updatedChats.length === 0) {
+                await chat.handleStartNewChat();
+            }
+        }
+
         initDashboard();
     }, []);
 
