@@ -8,11 +8,11 @@ const ChatInterface = ({messages, handleSendMessageClick, userMessage, setUserMe
     return (
     <section style={{
             scrollbarWidth: 'none'
-        }} className="chatting min-h-screen lg:w-[75%] w-full overflow-y-auto relative flex flex-col items-center px-40 py-5 gap-3 pb-30">
+        }} className="chatting min-h-screen lg:w-[75%] w-full overflow-y-auto relative flex flex-col items-center lg:px-40 lg:py-5 py-2 gap-2 lg:pb-30 pb-25 px-5">
 
         {messages.map((msg, index) => {
             return <div key={index} className={`user p-2 rounded-lg text-sm
-            ${msg.role === "ai" ? "w-[75%] self-start" : "w-fit bg-neutral-900 self-end shadow-md shadow-black/50 rounded-br-none mt-10"}`}>
+            ${msg.role === "ai" ? "w-[80%] self-start" : "w-fit bg-neutral-900 self-end shadow-sm shadow-black/50 rounded-br-none lg:mt-10 mt-3"}`}>
 
                 {msg.role === "ai" ? (
                     msg.content === "LOADING" ?
