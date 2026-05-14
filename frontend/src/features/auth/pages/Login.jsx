@@ -3,6 +3,7 @@ import InputField from "../components/InputField";
 import { Link, Navigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 const Login = () => {
 	const [data, setData] = useState({
@@ -73,6 +74,7 @@ const Login = () => {
 					</Link>
 				</p>
 			</div>
+			<ToastContainer position="top-right" />
 		</div>
 	);
 }

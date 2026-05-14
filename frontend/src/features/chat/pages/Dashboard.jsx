@@ -67,7 +67,7 @@ const Dashboard = () => {
         initDashboard();
     }, []);
 
-    return <main className="flex h-screen w-screen text-white bg-zinc-900">
+    return <main className="flex lg:flex-row flex-col h-screen w-screen text-white bg-zinc-900">
 
         <Sidebar
         chat={chat} 

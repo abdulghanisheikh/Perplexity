@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { register, login, getMe, logout } from "../service/auth.api.js";
 import { setUser, setLoading, setError } from "../auth.slice.js";
+import { toast } from "react-toastify";
 
 export const useAuth = () => {
     const dispatch = useDispatch();
@@ -13,6 +14,7 @@ export const useAuth = () => {
             return data;
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "Registration failed"));
+            toast.error(err.response?.data?.message || "error while registrating user");
         } finally {
             dispatch(setLoading(false));
         }
@@ -32,6 +34,7 @@ export const useAuth = () => {
             return data;
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "Login Failed"));
+            toast.error(err.response?.data?.message || "error while logging user");
         } finally {
             dispatch(setLoading(false));
         }
@@ -60,6 +63,7 @@ export const useAuth = () => {
             return data;
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "Logout failed"));
+            toast.error(err.response?.data?.message || "error while logging out user");
         } finally {
             dispatch(setLoading(false));
         }

@@ -3,6 +3,7 @@ import InputField from "../components/InputField";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { Navigate } from "react-router";
+import { ToastContainer } from "react-toastify";
 
 const Register = () => {
     const [data, setData] = useState({
@@ -75,6 +76,7 @@ const Register = () => {
                 </Link>
             </p>
         </div>
+        <ToastContainer position="top-right" />
         </div>
     );
 }
