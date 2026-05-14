@@ -71,7 +71,7 @@ const Dashboard = () => {
 
         <Sidebar
         chat={chat} 
-        handleDeleteChatClick={handleDeleteChatClick} 
+        handleDeleteChatClick={handleDeleteChatClick}
         messagesObject={messagesObject} 
         handleLogoutClick={handleLogoutClick}
         chatList={chatList} 

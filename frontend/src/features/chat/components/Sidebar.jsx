@@ -1,10 +1,15 @@
+import {useState} from "react";
 import { MdDelete } from "react-icons/md";
 import Navbar from "./Navbar";
 import { IoMdAdd } from "react-icons/io";
 
 const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, messagesObject, handleDeleteChatClick}) => {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    return <aside className="lg:min-w-[25%] flex flex-col gap-8 bg-black/10">
+    if(!sidebarOpen) {
+        return <aside></aside>
+    } else {
+        return <aside className="lg:min-w-[25%] flex flex-col gap-8 bg-black/10">
         {/* navbar */}
         <Navbar click={handleLogoutClick} />
 
@@ -45,6 +50,7 @@ const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, messagesObje
             })}
         </div>
     </aside>
+    }
 }
 
 export default Sidebar;

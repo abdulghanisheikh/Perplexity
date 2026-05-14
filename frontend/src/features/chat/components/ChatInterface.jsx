@@ -8,7 +8,7 @@ const ChatInterface = ({messages, handleSendMessageClick, userMessage, setUserMe
     return (
     <section style={{
             scrollbarWidth: 'none'
-        }} className="chatting min-h-screen lg:w-[75%] overflow-y-auto relative flex flex-col items-center px-40 py-5 gap-3 pb-30">
+        }} className="chatting min-h-screen lg:w-[75%] w-full overflow-y-auto relative flex flex-col items-center px-40 py-5 gap-3 pb-30">
 
         {messages.map((msg, index) => {
             return <div key={index} className={`user p-2 rounded-lg text-sm
