@@ -44,6 +44,10 @@ const Dashboard = () => {
         if(!updatedChats || updatedChats.length === 0) {
             await chat.handleStartNewChat();
         }
+
+        // select/open the last chat
+        const chatID = updatedChats[updatedChats.length - 1]._id;
+        await chat.handleOpenChat({activeChatId: chatID, message: messagesObject});
     }
 
     useEffect(() => {
@@ -54,6 +58,10 @@ const Dashboard = () => {
             if(!updatedChats || updatedChats.length === 0) {
                 await chat.handleStartNewChat();
             }
+
+            // select/open the last chat
+            const chatID = updatedChats[updatedChats.length - 1]._id;
+            await chat.handleOpenChat({activeChatId: chatID, message: messagesObject});
         }
 
         initDashboard();

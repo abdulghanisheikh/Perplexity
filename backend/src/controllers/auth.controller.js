@@ -32,7 +32,9 @@ export const registerUser = async(req, res) => {
         { expiresIn: "7d" }
     );
 
-    const emailVerificationURL = `http://localhost:3000/api/auth/verifyEmail?token=${emailVerificationToken}`;
+    const emailVerificationURL = process.env.NODE_ENVIRONMENT === 'development' ? 
+    `http://localhost:3000/api/auth/verifyEmail?token=${emailVerificationToken}` : 
+    `${process.env.FRONTEND_URL}/api/auth/verifyEmail?token=${emailVerificationToken}`;
 
     const html = `
         <p>Hi ${username},</p>

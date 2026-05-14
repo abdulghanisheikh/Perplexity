@@ -34,7 +34,6 @@ export const useChat = () => {
 
                     if(data.done) {
                         dispatch(setLoading(false));
-                        return;
                     }
 
                     // first chunk
@@ -83,7 +82,7 @@ export const useChat = () => {
                     return acc;
                 }, {});
 
-                dispatch(setChats(allChats));
+                dispatch(setChats(allChats));          
             }
 
             return chats;
@@ -153,7 +152,7 @@ export const useChat = () => {
                 dispatch(setCurrentChatId(""));
             }
         } catch(err) {
-            dispatch(setError(err?.response?.data?.message || "chat delete operation failed"));
+            dispatch(setError(err?.response?.data?.message || "error while deleting the chat"));
             toast.error(err.response?.data?.message || "error while deleting the chat");
         } finally {
             dispatch(setLoading(false));

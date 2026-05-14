@@ -1,5 +1,6 @@
 import express from "express";
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config();
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import chatRouter from "./routes/chat.routes.js";
@@ -15,19 +16,17 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-if(process.env.NODE_ENVIRONMENT === "development") {
-    app.use(cors({
-        origin: "http://localhost:3000",
-        methods: ["POST", "GET"],
-        credentials: true
-    }));
-}
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // serve static files
 app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    methods: ["POST", "GET", "DELETE"],
+    credentials: true
+}));
 
 // health check
 app.get("/health", (req, res) => {

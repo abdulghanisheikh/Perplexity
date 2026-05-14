@@ -54,7 +54,7 @@ const agent = createReactAgent({
     llm: geminiModel,
     tools: [emailTool, webSearchTool],
     messageModifier: `You are a helpful assistant. You have access to web search and email tools. 
-    Use web search when you need current or real-time information.`
+    Use web search when you need current or real-time information and give the response in mainly in the form of Headings and their sub-headings/points.`
 });
 
 export const generateResponse = async (messages) => {
