@@ -4,7 +4,7 @@ import { IoMdAdd } from "react-icons/io";
 
 const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, messagesObject, handleDeleteChatClick}) => {
 
-    return <aside className="min-w-[25%] flex flex-col gap-8 bg-neutral-900 rounded-md">
+    return <aside className="min-w-[25%] flex flex-col gap-8 bg-black/10">
         {/* navbar */}
         <Navbar click={handleLogoutClick} />
 

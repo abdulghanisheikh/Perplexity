@@ -13,7 +13,7 @@ const WelcomeScreen = ({ username, handleSendMessageClick, userMessage, setUserM
 
 		<h1 className="font-semibold text-6xl">Welcome to <span className="font-bold text-sky-500">Perplexity</span></h1>
 
-		<form onSubmit={handleSendMessageClick} className="userInput rounded-xl bg-neutral-950 border border-white/50 mt-8 flex items-center justify-center w-150 gap-2">
+		<form onSubmit={handleSendMessageClick} className="userInput rounded-xl border border-white/50 mt-8 flex items-center justify-center w-150 gap-2">
 			<textarea type="text" value={userMessage} onChange={(e) => setUserMessage(e.target.value)} placeholder="How can I help you today?" className="h-35 w-150 text-sm outline-none text-white resize-none p-3" />
 			
 			<button disabled={!userMessage.trim() || loading} type="submit" className={`self-end rounded-full p-1.5 bg-sky-600 mb-3 mr-3
