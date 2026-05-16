@@ -6,11 +6,11 @@ import { IoMdAdd } from "react-icons/io";
 const Sidebar = ({handleLogoutClick, chat, chatList, currentChatId, messagesObject, handleDeleteChatClick}) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
    
-    return <aside className="lg:max-w-[25%] w-full flex lg:flex-col flex-row gap-8 bg-black/10">
+    return <aside className="lg:max-w-[25%] w-full h-screen flex flex-col gap-8 bg-zinc-900 lg:bg-black/10">
         {/* navbar */}
         <Navbar click={handleLogoutClick} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
-        <div className={`lg:border-none lg:bg-black/10 bg-zinc-900 lg:flex flex-col lg:gap-8 lg:rounded-none lg:static lg:w-full lg:py-0 py-5 px-3 ${sidebarOpen ? 'fixed top-12 right-0 z-30 flex flex-col gap-8 w-[80%] h-full border-l-2 border-t-2 border-zinc-800 rounded-l-xl' : 'hidden'}`}>
+        <div className={`lg:border-none lg:flex flex-col lg:gap-8 lg:rounded-none lg:static lg:w-full lg:py-0 py-5 px-3 ${sidebarOpen ? 'fixed top-12 right-0 z-30 flex flex-col gap-8 w-[80%] h-full border-l-2 border-t-2 border-zinc-800 rounded-l-xl' : 'hidden'}`}>
 
             {/* new chat button */}
             <div
