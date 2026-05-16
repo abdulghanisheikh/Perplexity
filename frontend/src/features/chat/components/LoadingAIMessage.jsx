@@ -29,7 +29,7 @@ const LoadingAIMessage = () => {
                     autoplay
                 />
             </div>
-            <p ref={paraReference} className='text-gray-400'></p>
+            <p ref={paraReference} className='text-gray-400 italic'></p>
         </div>
     )
 }
