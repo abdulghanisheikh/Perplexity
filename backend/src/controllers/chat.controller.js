@@ -4,56 +4,56 @@ import chatModel from "../models/chat.model.js";
 import messageModel from "../models/message.model.js";
 
 export const sendMessage = async(req, res) => {
-    let message = req.body.message;
-    let chatId = req.body.chatId;
-
-    // setting headers to enable streaming
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-
-    if(!message) {
-        res.status(400);
-        return res.write(`data: ${JSON.stringify({
-            success: false,
-            message: "Can't send empty message",
-            err: "empty message"
-        })}\n\n`);
-    }
-
-    let chatTitle = null, chat = null;
-
-    // first message of chat
-    if(!chatId) {
-        chatTitle = await generateChatTitle(message);
-
-        chat = await chatModel.create({
-            title: chatTitle,
-            user: req.user.id
-        });
-
-    } else {
-        chat = await chatModel.findById(chatId);
-
-        if(chat.title === "Untitled chat") {
-            chatTitle = await generateChatTitle(message);
-            chat.title = chatTitle;
-
-            await chat.save();
-        }
-    }
-
-    // fetching all messages of this chat
-    let messages = await messageModel.find({chat: chatId || chat._id});
-
-    if(messages.length > 0) {
-        messages.forEach((msg, index) => {
-            if(msg.role === "ai") messages[index] = new AIMessage(msg);
-            else messages[index] = new HumanMessage(msg);
-        });
-    }
-
     try {
+        let message = req.body.message;
+        let chatId = req.body.chatId;
+
+        // setting headers to enable streaming
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+
+        if(!message) {
+            res.status(400);
+            return res.write(`data: ${JSON.stringify({
+                success: false,
+                message: "Can't send empty message",
+                err: "empty message"
+            })}\n\n`);
+        }
+
+        let chatTitle = null, chat = null;
+
+        // first message of chat
+        if(!chatId) {
+            chatTitle = await generateChatTitle(message);
+
+            chat = await chatModel.create({
+                title: chatTitle,
+                user: req.user.id
+            });
+
+        } else {
+            chat = await chatModel.findById(chatId);
+
+            if(chat.title === "Untitled chat") {
+                chatTitle = await generateChatTitle(message);
+                chat.title = chatTitle;
+
+                await chat.save();
+            }
+        }
+
+        // fetching all messages of this chat
+        let messages = await messageModel.find({chat: chatId || chat._id});
+
+        if(messages.length > 0) {
+            messages.forEach((msg, index) => {
+                if(msg.role === "ai") messages[index] = new AIMessage(msg);
+                else messages[index] = new HumanMessage(msg);
+            });
+        }
+
         messages.push(new HumanMessage(message));
 
         await messageModel.create({
@@ -96,6 +96,7 @@ export const sendMessage = async(req, res) => {
         });
 
         messages.push(new AIMessage(lastMessage));
+
     } catch(err) {
         res.status(500);
         return res.write(`data: ${JSON.stringify({
