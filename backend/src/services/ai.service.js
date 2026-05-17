@@ -68,7 +68,7 @@ export const generateResponse = async (messages) => {
 }
 
 export const generateChatTitle = async(message) => {
-    const response = await cohereModel.invoke([
+    const response = await mistralModel.invoke([
         ["system", `
             You are a helpful assistant that generates concise and descriptive titles for chat conversations.
 
