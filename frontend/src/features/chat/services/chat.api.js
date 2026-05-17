@@ -5,9 +5,8 @@ const api = new axios.create({
 });
 
 export const sendMessage = async({message, chatId = ""}) => {
-    const baseURL = 'https://perplexity-clone-i74e.onrender.com';
-    
-    const response = await fetch(`${baseURL}/api/chats/message`, {
+
+    const response = await fetch("/api/chats/message", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
