@@ -4,7 +4,6 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { sendEmail } from "./mail.service.js";
 import * as z from "zod";
 import {ChatMistralAI} from "@langchain/mistralai";
-import { ChatCohere } from "@langchain/cohere"
 import { webSearch } from "./search_internet.service.js";
 
 // This tool let the model to send an email
@@ -36,20 +35,12 @@ const webSearchTool = tool(
     }
 );
 
-
 const mistralModel = new ChatMistralAI({
     apiKey: process.env.MISTRAL_API_KEY,
     model: 'mistral-small-latest',
     temperature: 0,
     maxRetries: 2
 });
-
-const cohereModel = new ChatCohere({
-    apiKey: process.env.COHERE_API_KEY,
-    model: "command-r-08-2024",
-    temperature: 0,
-    maxRetries: 2
-})
 
 const agent = createReactAgent({
     llm: mistralModel,
