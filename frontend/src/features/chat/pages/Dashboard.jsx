@@ -67,7 +67,7 @@ const Dashboard = () => {
         initDashboard();
     }, []);
 
-    return <main className="flex lg:flex-row flex-col h-screen w-screen text-white">
+    return <main className="flex lg:flex-row flex-col h-screen w-screen text-white overflow-hidden">
 
         <Sidebar
         chat={chat} 

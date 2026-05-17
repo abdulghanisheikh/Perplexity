@@ -11,8 +11,8 @@ const ChatInterface = ({messages, handleSendMessageClick, userMessage, setUserMe
         }} className="chatting min-h-screen lg:w-[75%] w-full overflow-y-auto relative flex flex-col items-center lg:px-40 lg:py-5 py-11 gap-2 lg:pb-30 pb-25 px-5 bg-zinc-900">
 
         {messages.map((msg, index) => {
-            return <div key={index} className={`user p-2 rounded-lg lg:text-sm text-xs
-            ${msg.role === "ai" ? "w-[80%] self-start" : "w-fit bg-neutral-900 self-end shadow-sm shadow-black/50 rounded-br-none lg:mt-5 mt-3"}`}>
+            return <div key={index} className={`user lg:p-2 rounded-lg lg:text-sm text-xs p-1 max-w-[80%]
+            ${msg.role === "ai" ? "self-start" : "bg-neutral-900 self-end shadow-sm shadow-black/50 rounded-br-none lg:mt-5 mt-3"}`}>
 
                 {msg.role === "ai" ? (
                     msg.content === "LOADING" ?

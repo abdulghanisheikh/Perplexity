@@ -3,9 +3,9 @@ import { IoMdArrowRoundUp } from "react-icons/io";
 
 const WelcomeScreen = ({ username, handleSendMessageClick, userMessage, setUserMessage, loading }) => {
 	return (
-	<main className="flex flex-col items-center justify-center h-full lg:w-[75%] w-full">
+	<main className="flex flex-col items-center justify-center h-full lg:w-[75%] w-full bg-zinc-900">
 
-		<div className="lg:h-40 lg:w-40 p-3 w-25 h-25 rounded-2xl border-2 border-gray-200 hover:shadow-[0_2px_70px_rgba(30,120,255,0.5)] shadow-[0_2px_50px_rgba(30,100,255,0.5)] duration-300 ease-in-out text-white flex items-center justify-center lg:rounded-3xl bg-zinc-900 lg:mb-5 mb-10">
+		<div className="lg:h-40 lg:w-40 p-3 w-25 h-25 rounded-2xl border-2 border-gray-200 hover:shadow-[0_2px_70px_rgba(30,120,255,0.5)] shadow-[0_2px_50px_rgba(30,100,255,0.5)] duration-300 ease-in-out text-white flex items-center justify-center lg:rounded-3xl lg:mb-5 mb-10">
 			<SiCodeforces size={100} color="skyblue" />
 		</div>
 

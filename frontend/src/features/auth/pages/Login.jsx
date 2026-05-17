@@ -15,7 +15,7 @@ const Login = () => {
 	const user = useSelector(state => state.auth.user);
 	const loading = useSelector(state => state.auth.loading);
 
-	// User already loggedIn
+	// user already loggedIn
 	if(!loading && user) {
 		return <Navigate to='/'></Navigate>
 	}
@@ -63,7 +63,7 @@ const Login = () => {
 						type="submit"
 						className="w-full bg-sky-400 active:scale-95 duration-300 ease-in-out text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
 					>
-						Login
+						{loading ? "Logging In...": "Login"}
 					</button>
 				</form>
 
