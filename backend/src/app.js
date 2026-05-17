@@ -22,11 +22,11 @@ const __dirname = path.dirname(__filename);
 // serve static files
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.use(cors({
-    origin: ["http://localhost:5173"],
-    methods: ["POST", "GET", "DELETE"],
-    credentials: true
-}));
+// app.use(cors({
+//     origin: ["http://localhost:5173"],
+//     methods: ["POST", "GET", "DELETE"],
+//     credentials: true
+// }));
 
 // health check
 app.get("/health", (req, res) => {
