@@ -1,10 +1,10 @@
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import "dotenv/config";
 import { AIMessage, createAgent, HumanMessage, tool } from "langchain";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { sendEmail } from "./mail.service.js";
 import * as z from "zod";
 import {ChatMistralAI} from "@langchain/mistralai";
+import { ChatCohere } from "@langchain/cohere"
 import { webSearch } from "./search_internet.service.js";
 
 // This tool let the model to send an email
@@ -36,12 +36,6 @@ const webSearchTool = tool(
     }
 );
 
-const geminiModel = new ChatGoogleGenerativeAI({
-    model: "gemini-3.1-flash-lite",
-    apiKey: process.env.GEMINI_API_KEY,
-    temperature: 0,
-    maxRetries: 2
-});
 
 const mistralModel = new ChatMistralAI({
     apiKey: process.env.MISTRAL_API_KEY,
@@ -50,8 +44,15 @@ const mistralModel = new ChatMistralAI({
     maxRetries: 2
 });
 
+const cohereModel = new ChatCohere({
+    apiKey: process.env.COHERE_API_KEY,
+    model: "command-r-08-2024",
+    temperature: 0,
+    maxRetries: 2
+})
+
 const agent = createReactAgent({
-    llm: geminiModel,
+    llm: mistralModel,
     tools: [emailTool, webSearchTool],
     messageModifier: `You are a helpful assistant. You have access to web search and email tools. 
     Use web search when you need current or real-time information and give the response in mainly in the form of Headings and their sub-headings/points.`
@@ -67,7 +68,7 @@ export const generateResponse = async (messages) => {
 }
 
 export const generateChatTitle = async(message) => {
-    const response = await mistralModel.invoke([
+    const response = await cohereModel.invoke([
         ["system", `
             You are a helpful assistant that generates concise and descriptive titles for chat conversations.
 

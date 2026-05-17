@@ -1,4 +1,5 @@
 import { IoMenu } from "react-icons/io5";
+import { IoCloseSharp } from "react-icons/io5";
 
 const Navbar = ({click, sidebarOpen, setSidebarOpen}) => {
     return (
@@ -12,7 +13,7 @@ const Navbar = ({click, sidebarOpen, setSidebarOpen}) => {
             className="lg:hidden"
             onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-                <IoMenu size={20} />
+                {sidebarOpen ? <IoCloseSharp size={22} /> : <IoMenu size={22} />}
             </div>
         </nav>
     )
