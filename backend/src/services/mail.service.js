@@ -1,11 +1,19 @@
 import nodemailer from "nodemailer";
+import {google} from "googleapis";
+
+const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    'https://developers.google.com/oauthplayground'
+);
+
+oauth2Client.setCredentials({
+    refresh_token: process.env.GOOGLE_REFRESH_TOKEN
+});
 
 // connection between web server and SMTP (email server)
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    family: 4,
+    service: "gmail",
     auth: {
         type: "OAuth2",
         user: process.env.GOOGLE_EMAIL_USER,
@@ -28,6 +36,9 @@ transporter.verify()
 // Function to send email
 export const sendEmail = async({ to, subject, html = "" }) => {
     try {
+        const {token} = await oauth2Client.getAccessToken();
+        transporter.options.auth.accessToken = token;
+
         await transporter.sendMail({
             from: process.env.GOOGLE_EMAIL_USER,
             to,

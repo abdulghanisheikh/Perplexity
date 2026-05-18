@@ -1,12 +1,16 @@
 import { Link } from "react-router";
 import InputField from "../components/InputField";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 
 const Register = () => {
     const navigate = useNavigate();
+
+    const registerBtnReference = useRef(null);
+    const loading = useSelector(state => state.auth.loading);
 
     const [data, setData] = useState({
         username: "",
@@ -30,6 +34,19 @@ const Register = () => {
                 navigate('/login');
             }, 2000);
         }
+    }
+
+    const loadingButton = () => {
+        const words = ["Creating...", "Please wait..."];
+        let index = 0;
+
+        const btn = registerBtnReference.current;
+        btn.innerText = "Create Account";
+        
+        setInterval(() => {
+            btn.innerText = words[index];
+            index = (index + 1) % words.length;
+        }, 1500);
     }
 
     return (
@@ -67,8 +84,9 @@ const Register = () => {
                 ></InputField>
 
                 <button
-                    type="submit"
-                    className="w-full bg-sky-400 active:scale-90 duration-300 ease-in-out text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
+                ref={registerBtnReference}
+                type="submit"
+                className="w-full bg-sky-400 active:scale-90 duration-300 ease-in-out text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
                 >
                     Create Account
                 </button>

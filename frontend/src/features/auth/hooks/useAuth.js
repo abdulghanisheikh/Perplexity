@@ -13,9 +13,11 @@ export const useAuth = () => {
             const {data} = await register({username, email, password});
 
             const {success, message} = data;
-            
+
             if(success) {
-                toast.success(message);
+                toast.success(message, {
+                    autoClose: 5000
+                });
             }
 
             return data;

@@ -1,23 +1,19 @@
-import {useRef, useEffect} from 'react';
+import { useEffect, useState } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const LoadingAIMessage = () => {
-    const paraReference = useRef(null);
-
-    const showWords = () => {
-        const words = ["Generating...", "Searching...", "Analyzing...", "Please wait..."];
-        let para = paraReference.current;
-        para.innerText = "Thinking...";
-        let index = 0;
-
-        setInterval(() => {
-            para.innerText = words[index];
-            index = (index + 1) % words.length;
-        }, 2000);
-    }
+    const words = ["Thinking...", "Generating...", "Searching...", "Analyzing...", "Please wait..."];
+    const [currentWord, setCurrentWord] = useState(words[0]);
 
     useEffect(() => {
-        showWords();
+        let index = 0;
+
+        const interval = setInterval(() => {
+            index = (index + 1) % words.length;
+            setCurrentWord(words[index]);
+        }, 2000);
+
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -29,7 +25,7 @@ const LoadingAIMessage = () => {
                     autoplay
                 />
             </div>
-            <p ref={paraReference} className='text-gray-400 italic'></p>
+            <p className='text-gray-400 italic'>{currentWord}</p>
         </div>
     )
 }
