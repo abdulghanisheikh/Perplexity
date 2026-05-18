@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 // Connection between web server and SMTP (email server)
 const transporter = nodemailer.createTransport({
     service: "gmail",
+    family: 4, // force IPv4
     auth: {
         type: "OAuth2",
         user: process.env.GOOGLE_EMAIL_USER,
