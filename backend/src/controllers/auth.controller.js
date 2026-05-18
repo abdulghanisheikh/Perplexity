@@ -6,55 +6,63 @@ import bcrypt from "bcrypt";
 import { redis } from "../configs/cache.config.js";
 
 export const registerUser = async(req, res) => {
-    const { username, email, password } = req.body;
+    try {
+        const { username, email, password } = req.body;
 
-    const isUserAlreadyExists = await userModel.findOne({
-        $or: [ {username}, {email} ]
-    });
+        const isUserAlreadyExists = await userModel.findOne({
+            $or: [ {username}, {email} ]
+        });
 
-    if(isUserAlreadyExists) {
-        return res.status(409).json({
+        if(isUserAlreadyExists) {
+            return res.status(409).json({
+                success: false,
+                message: "User with this username or email already exists.",
+                err: "User already exists."
+            });
+        }
+
+        const user = await userModel.create({
+            username,
+            email,
+            password
+        });
+
+        const emailVerificationToken = jwt.sign(
+            { email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        const emailVerificationURL = process.env.NODE_ENVIRONMENT === 'development' ? 
+        `http://localhost:3000/api/auth/verifyEmail?token=${emailVerificationToken}` : 
+        `${process.env.FRONTEND_URL}/api/auth/verifyEmail?token=${emailVerificationToken}`;
+
+        const html = `
+            <p>Hi ${username},</p>
+            <p>Please verify your email address by clicking the link below:</p>
+            <a href=${emailVerificationURL}>Verify email</a>
+            <p>If you did not create an account, Ignore this email.</p>
+            <p>- The Perplexity Team</p>
+        `;
+
+        const result = await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
+        
+        res.status(201).json({
+            success: true,
+            message: "User registered, Verify your email via verification link sent to your registered email",
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
+    } catch(err) {
+        return res.status(500).json({
             success: false,
-            message: "User with this username or email already exists.",
-            err: "User already exists."
+            message: "something went wrong, try again",
+            error: err.message
         });
     }
-
-    const user = await userModel.create({
-        username,
-        email,
-        password
-    });
-
-    const emailVerificationToken = jwt.sign(
-        { email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-    );
-
-    const emailVerificationURL = process.env.NODE_ENVIRONMENT === 'development' ? 
-    `http://localhost:3000/api/auth/verifyEmail?token=${emailVerificationToken}` : 
-    `${process.env.FRONTEND_URL}/api/auth/verifyEmail?token=${emailVerificationToken}`;
-
-    const html = `
-        <p>Hi ${username},</p>
-        <p>Please verify your email address by clicking the link below:</p>
-        <a href=${emailVerificationURL}>Verify email</a>
-        <p>If you did not create an account, Ignore this email.</p>
-        <p>- The Perplexity Team</p>
-    `;
-
-    const result = await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
-    
-    res.status(201).json({
-        success: true,
-        message: "User registered, Please verify your email via verification link",
-        user: {
-            id: user._id,
-            username: user.username,
-            email: user.email
-        }
-    });
 }
 
 export const verifyEmail = async(req, res) => {

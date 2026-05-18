@@ -2,10 +2,12 @@ import { Link } from "react-router";
 import InputField from "../components/InputField";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
 import { ToastContainer } from "react-toastify";
 
 const Register = () => {
+    const navigate = useNavigate();
+
     const [data, setData] = useState({
         username: "",
         email: "",
@@ -23,7 +25,10 @@ const Register = () => {
 
         if(success) {
             setData({username: "", email: "", password: ""});
-            return <Navigate to='/login'></Navigate>;
+
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
         }
     }
 

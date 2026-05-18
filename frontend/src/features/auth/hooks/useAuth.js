@@ -13,7 +13,10 @@ export const useAuth = () => {
             const {data} = await register({username, email, password});
 
             const {success, message} = data;
-            if()
+            
+            if(success) {
+                toast.success(message);
+            }
 
             return data;
         } catch(err) {

@@ -1,11 +1,11 @@
 import nodemailer from "nodemailer";
 
-// Connection between web server and SMTP (email server)
+// connection between web server and SMTP (email server)
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',   // ✅ explicit host instead of service: 'gmail'
+    host: 'smtp.gmail.com',
     port: 465,
-    secure: true,             // true for port 465
-    family: 4, 
+    secure: true,
+    family: 4,
     auth: {
         type: "OAuth2",
         user: process.env.GOOGLE_EMAIL_USER,
