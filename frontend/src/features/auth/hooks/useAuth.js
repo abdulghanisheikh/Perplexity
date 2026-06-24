@@ -67,7 +67,10 @@ export const useAuth = () => {
             dispatch(setLoading(true));
 
             const {data} = await logout();
-            dispatch(setUser(null));
+
+            const {success} = data;
+
+            if(success) dispatch(setUser(null));
 
             return data;
         } catch(err) {

@@ -3,7 +3,6 @@ import { sendEmail } from "../services/mail.service.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import bcrypt from "bcrypt";
-import { redis } from "../configs/cache.config.js";
 
 export const registerUser = async(req, res) => {
     try {
@@ -112,56 +111,63 @@ export const verifyEmail = async(req, res) => {
 export const loginUser = async(req, res) => {
     const { username, password } = req.body;
 
-    const user = await userModel.findOne({ username }).select("+password");
+    try {
+        const user = await userModel.findOne({ username }).select("+password");
 
-    if(!user) {
-        return res.status(409).json({
-            success: false,
-            message: "Enter correct credentials",
-            err: "Incorrect credentials"
-        });
-    }
-
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-
-    if(!isPasswordMatch) {
-        return res.status(400).json({
-            success: false,
-            message: "Enter correct credentials",
-            err: "Incorrect credentials"
-        });
-    }
-
-    if(!user.verified) {
-        return res.status(400).json({
-            success: false,
-            message: "Please verify your email first",
-            err: "Email not verified"
-        });
-    }
-
-    const token = jwt.sign(
-        { id: user._id, username: user.username },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-    );
-    
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 24 * 60 * 60 * 1000
-    });
-
-    res.status(200).json({
-        success: true,
-        message: "User logged-In",
-        user: {
-            id: user._id,
-            username: user.username,
-            email: user.email
+        if(!user) {
+            return res.status(409).json({
+                success: false,
+                message: "Enter correct credentials",
+                err: "Incorrect credentials"
+            });
         }
-    });
+
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+        if(!isPasswordMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Enter correct credentials",
+                err: "Incorrect credentials"
+            });
+        }
+
+        if(!user.verified) {
+            return res.status(400).json({
+                success: false,
+                message: "Please verify your email first",
+                err: "Email not verified"
+            });
+        }
+
+        const token = jwt.sign(
+            { id: user._id, username: user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+        
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "User logged-In",
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
+    } catch(err) {
+        return res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
 }
 
 export const getMe = async(req, res) => {
@@ -192,11 +198,6 @@ export const logoutUser = async(req, res) => {
     const token = req.cookies.token;
 
     res.clearCookie("token");
-
-    // Token blacklisting
-    // ex => Expiry
-    // Key => token , value => date
-    await redis.set(token, Date.now().toString(), {ex: 60*60*24*7});
 
     return res.status(200).json({
         success: true,

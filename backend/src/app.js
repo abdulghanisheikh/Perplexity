@@ -20,11 +20,6 @@ const __dirname = path.dirname(__filename);
 // serve static files
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// health check
-app.get("/health", (req, res) => {
-    res.json({ message: "Server is running" });
-});
-
 app.use("/api/auth", authRouter);
 app.use("/api/chats", chatRouter);
 
