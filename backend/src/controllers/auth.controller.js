@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 
 export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
-    console.log("data from client:", req.body);
 
     try {
         const isUserAlreadyExists = await userModel.findOne({
@@ -49,8 +48,6 @@ export const registerUser = async(req, res) => {
         `;
 
         const result = await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
-        console.log("Email service result:", result);
-
         return res.status(200).json({
             success: true,
             message: "User registered, Verify your email via verification link sent to your registered email",
@@ -71,7 +68,6 @@ export const registerUser = async(req, res) => {
 
 export const verifyEmail = async(req, res) => {
     const { token } = req.query;
-    const loginPageURL = `${process.env.FRONTEND_URL}/login`;
 
     if(!token) {
         return res.status(400).json({
@@ -96,7 +92,12 @@ export const verifyEmail = async(req, res) => {
         user.verified = true;
         await user.save();
 
-        return res.status(200).redirect(loginPageURL);
+        const redirectUrl = process.env.NODE_ENV === "development" ?
+        "http://localhost:5173/" :
+        `${process.env.FRONTEND_URL}/`;
+        
+        console.log("redirectUrl:", redirectUrl);
+        return res.status(200).redirect(redirectUrl);
     } catch(err) {
         return res.status(500).json({
             success: false,

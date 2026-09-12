@@ -46,6 +46,8 @@ export const useAuth = () => {
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "Login Failed"));
             toast.error(err.response?.data?.message || "error while logging user");
+            
+            return {error: err.response?.data?.message || "error while logging user"};
         } finally {
             dispatch(setLoading(false));
         }
