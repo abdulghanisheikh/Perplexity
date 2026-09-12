@@ -3,7 +3,7 @@ import { AIMessage, createAgent, HumanMessage, tool } from "langchain";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { sendEmail } from "./mail.service.js";
 import * as z from "zod";
-import {ChatMistralAI} from "@langchain/mistralai";
+import { ChatMistralAI } from "@langchain/mistralai";
 import { webSearch } from "./search_internet.service.js";
 
 // This tool let the model to send an email

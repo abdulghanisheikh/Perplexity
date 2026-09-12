@@ -21,9 +21,8 @@ const Register = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         const {username, email, password} = data;
-        const myData = await handleRegister({username, email, password});
 
-        const {success} = myData;
+        const {success} = await handleRegister({username, email, password});
 
         if(success) {
             setData({username: "", email: "", password: ""});

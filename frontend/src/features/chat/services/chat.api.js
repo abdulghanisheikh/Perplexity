@@ -1,6 +1,11 @@
 import axios from "axios";
 
-const api = new axios.create({
+const baseURL = import.meta.env.VITE_NODE_ENV === "development" ?
+    "http://localhost:3000" :
+    import.meta.env.VITE_BACKEND_URL;
+
+const api = axios.create({
+    baseURL: `${baseURL}/api/chats`,
     withCredentials: true
 });
 
@@ -19,21 +24,21 @@ export const sendMessage = async({message, chatId = ""}) => {
 }
 
 export const getChats = async() => {
-    const response = await api.get("/api/chats/");
+    const response = await api.get("/");
     return response;
 }
 
 export const getMessages = async(chatId) => {
-    const response = await api.get(`/api/chats/${chatId}/messages`);
+    const response = await api.get(`/${chatId}/messages`);
     return response;
 }
 
 export const deleteChat = async(chatId) => {
-    const response = await api.delete(`/api/chats/delete/${chatId}`);
+    const response = await api.delete(`/delete/${chatId}`);
     return response;
 }
 
 export const startNewChat = async() => {
-    const response = await api.post("/api/chats/new");
+    const response = await api.post("/new");
     return response;
 }

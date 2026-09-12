@@ -5,11 +5,15 @@ import "dotenv/config";
 import bcrypt from "bcrypt";
 
 export const registerUser = async(req, res) => {
-    try {
-        const { username, email, password } = req.body;
+    const { username, email, password } = req.body;
+    console.log("Client data inside controller:", req.body);
 
+    try {
         const isUserAlreadyExists = await userModel.findOne({
-            $or: [ {username}, {email} ]
+            $or: [
+                {username},
+                {email} 
+            ]
         });
 
         if(isUserAlreadyExists) {
@@ -45,7 +49,7 @@ export const registerUser = async(req, res) => {
         `;
 
         const result = await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
-        
+
         res.status(201).json({
             success: true,
             message: "User registered, Verify your email via verification link sent to your registered email",

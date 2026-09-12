@@ -24,6 +24,8 @@ export const useAuth = () => {
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "Registration failed"));
             toast.error(err.response?.data?.message || "error while registrating user");
+
+            return {error: err?.response?.data?.message || "Registration failed"}
         } finally {
             dispatch(setLoading(false));
         }

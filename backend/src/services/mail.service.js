@@ -39,7 +39,7 @@ export const sendEmail = async({ to, subject, html = "" }) => {
         const {token} = await oauth2Client.getAccessToken();
         transporter.options.auth.accessToken = token;
 
-        await transporter.sendMail({
+        const result = await transporter.sendMail({
             from: process.env.GOOGLE_EMAIL_USER,
             to,
             subject,
@@ -47,7 +47,9 @@ export const sendEmail = async({ to, subject, html = "" }) => {
         });
 
         console.log("Email sent!");
-        return `Email sent successfully to ${to}`;
+        console.log(`Email sent successfully to ${to}`);
+
+        return result;
     } catch(err) {
         console.log("Error sending email:", err.message);
     }
