@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 
 export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
-    console.log("Client data inside controller:", req.body);
 
     try {
         const isUserAlreadyExists = await userModel.findOne({
@@ -36,9 +35,9 @@ export const registerUser = async(req, res) => {
             { expiresIn: "7d" }
         );
 
-        const emailVerificationURL = process.env.NODE_ENVIRONMENT === 'development' ? 
+        const emailVerificationURL = process.env.NODE_ENV === "development" ? 
         `http://localhost:3000/api/auth/verifyEmail?token=${emailVerificationToken}` : 
-        `${process.env.FRONTEND_URL}/api/auth/verifyEmail?token=${emailVerificationToken}`;
+        `${process.env.BACKEND_URL}/api/auth/verifyEmail?token=${emailVerificationToken}`;
 
         const html = `
             <p>Hi ${username},</p>
@@ -50,7 +49,7 @@ export const registerUser = async(req, res) => {
 
         const result = await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
 
-        res.status(201).json({
+        return res.status(200).json({
             success: true,
             message: "User registered, Verify your email via verification link sent to your registered email",
             user: {
@@ -82,7 +81,7 @@ export const verifyEmail = async(req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await userModel.findOne({ email: decoded.email });
+        const user = await userModel.findOne({ email: decoded?.email });
 
         if(!user) {
             return res.status(400).json({
@@ -95,14 +94,7 @@ export const verifyEmail = async(req, res) => {
         user.verified = true;
         await user.save();
 
-        const html = `
-            <h1>Your email has been successfully verified. ✅</h1>
-            <p>You can now log in and start using Perplexity.</p>
-            <a href="${loginPageURL}">Login to your account</a>
-            <p>- The Perplexity Team</p>
-        `;
-
-        res.status(200).send(html);
+        return res.status(200).redirect(loginPageURL);
     } catch(err) {
         return res.status(500).json({
             success: false,
