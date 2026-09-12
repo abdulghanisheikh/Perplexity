@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 
 export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
+    console.log("data from client:", req.body);
 
     try {
         const isUserAlreadyExists = await userModel.findOne({
@@ -48,6 +49,7 @@ export const registerUser = async(req, res) => {
         `;
 
         const result = await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
+        console.log("Email service result:", result);
 
         return res.status(200).json({
             success: true,

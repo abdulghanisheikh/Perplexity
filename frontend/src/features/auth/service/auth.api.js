@@ -4,8 +4,6 @@ const baseURL = import.meta.env.VITE_NODE_ENV === "development" ?
     "http://localhost:3000" :
     import.meta.env.VITE_BACKEND_URL;
 
-console.log("baseURL:", baseURL);
-
 const api = axios.create({
     baseURL: `${baseURL}/api/auth`,
     withCredentials: true
