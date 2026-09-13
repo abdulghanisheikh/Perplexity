@@ -13,14 +13,17 @@ oauth2Client.setCredentials({
 
 // connection between web server and SMTP (email server)
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
         type: "OAuth2",
         user: process.env.GOOGLE_EMAIL_USER,
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         refreshToken: process.env.GOOGLE_REFRESH_TOKEN
-    }
+    },
+    family: 4
 });
 
 // Verify connection
@@ -33,7 +36,6 @@ transporter.verify()
     console.log("Email transporter verification failed.");
 });
 
-// Function to send email
 export const sendEmail = async({ to, subject, html = "" }) => {
     try {
         const {token} = await oauth2Client.getAccessToken();

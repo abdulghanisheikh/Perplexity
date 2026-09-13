@@ -23,31 +23,32 @@ export const registerUser = async(req, res) => {
             });
         }
 
+        const verificationToken = jwt.sign(
+            { email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        const verificationUrl = process.env.NODE_ENV === "development" ? 
+        `http://localhost:3000/api/auth/verifyEmail?token=${verificationToken}` : 
+        `${process.env.BACKEND_URL}/api/auth/verifyEmail?token=${verificationToken}`;
+
+        const html = `
+            <p>Hi ${username},</p>
+            <p>Please verify your email address by clicking the link below:</p>
+            <a href=${verificationUrl}>Verify email</a>
+            <p>If you did not create an account, Ignore this email.</p>
+            <p>- The Perplexity Team</p>
+        `;
+
+        await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
+
         const user = await userModel.create({
             username,
             email,
             password
         });
 
-        const emailVerificationToken = jwt.sign(
-            { email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "7d" }
-        );
-
-        const emailVerificationURL = process.env.NODE_ENV === "development" ? 
-        `http://localhost:3000/api/auth/verifyEmail?token=${emailVerificationToken}` : 
-        `${process.env.BACKEND_URL}/api/auth/verifyEmail?token=${emailVerificationToken}`;
-
-        const html = `
-            <p>Hi ${username},</p>
-            <p>Please verify your email address by clicking the link below:</p>
-            <a href=${emailVerificationURL}>Verify email</a>
-            <p>If you did not create an account, Ignore this email.</p>
-            <p>- The Perplexity Team</p>
-        `;
-
-        const result = await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
         return res.status(200).json({
             success: true,
             message: "User registered, Verify your email via verification link sent to your registered email",
@@ -60,7 +61,7 @@ export const registerUser = async(req, res) => {
     } catch(err) {
         return res.status(500).json({
             success: false,
-            message: "something went wrong, try again",
+            message: "Something went wrong, try again",
             error: err.message
         });
     }
