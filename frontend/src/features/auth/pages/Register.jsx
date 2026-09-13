@@ -71,7 +71,7 @@ const Register = () => {
                 type="submit"
                 className="w-full bg-sky-400 active:scale-90 duration-300 ease-in-out text-black font-semibold text-sm rounded-lg py-2.5 mt-2 cursor-pointer"
                 >
-                    {loading ? "Creating..." : "Create Account"}
+                    {loading === "register" ? "Creating..." : "Create Account"}
                 </button>
             </form>
 
