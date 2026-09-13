@@ -23,6 +23,12 @@ export const registerUser = async(req, res) => {
             });
         }
 
+        const user = await userModel.create({
+            username,
+            email,
+            password
+        });
+
         const verificationToken = jwt.sign(
             { email: user.email },
             process.env.JWT_SECRET,
@@ -41,13 +47,12 @@ export const registerUser = async(req, res) => {
             <p>- The Perplexity Team</p>
         `;
 
-        await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
-
-        const user = await userModel.create({
-            username,
-            email,
-            password
-        });
+        try {
+            await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
+        } catch(err) {
+            await userModel.deleteOne({_id: user._id});
+            throw new Error("Failed to send verification email, register again.");
+        }
 
         return res.status(200).json({
             success: true,

@@ -19,5 +19,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 
+// Routes
 app.use("/api/auth", authRouter);
 app.use("/api/chats", chatRouter);
