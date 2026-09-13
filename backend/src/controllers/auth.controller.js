@@ -153,12 +153,12 @@ export const loginUser = async(req, res) => {
         
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000
         });
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "User logged-In",
             user: {
@@ -176,8 +176,8 @@ export const loginUser = async(req, res) => {
 }
 
 export const getMe = async(req, res) => {
-    const userID = req.user.id;
-    const user = await userModel.findById(userID);
+    const userId = req.user.id;
+    const user = await userModel.findById(userId);
 
     if(!user) {
         return res.status(409).json({
@@ -188,7 +188,7 @@ export const getMe = async(req, res) => {
         });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "User fetched",
         user: {
