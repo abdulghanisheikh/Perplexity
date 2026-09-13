@@ -1,4 +1,5 @@
 import "dotenv/config";
+import "./configs/dns.config.js";
 import express from "express";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";

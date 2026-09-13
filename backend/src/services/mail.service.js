@@ -36,7 +36,7 @@ transporter.verify()
     console.log("Email transporter verification failed.");
 });
 
-export const sendEmail = async({ to, subject, html = "" }) => {
+export async function sendEmail({ to, subject, html = "" }) {
     try {
         const {token} = await oauth2Client.getAccessToken();
         transporter.options.auth.accessToken = token;
@@ -47,10 +47,8 @@ export const sendEmail = async({ to, subject, html = "" }) => {
             subject,
             html
         });
-
-        console.log("Email sent!");
+        
         console.log(`Email sent successfully to ${to}`);
-
         return result;
     } catch(err) {
         console.log("Error sending email:", err.message);
