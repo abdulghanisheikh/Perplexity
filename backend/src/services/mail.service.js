@@ -14,8 +14,8 @@ oauth2Client.setCredentials({
 // connection between web server and SMTP (email server)
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
         type: "OAuth2",
         user: process.env.GOOGLE_EMAIL_USER,
