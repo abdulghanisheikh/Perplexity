@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { AIMessage, createAgent, HumanMessage, tool } from "langchain";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { sendEmail } from "./mail.service.js";
 import * as z from "zod";
 import { ChatMistralAI } from "@langchain/mistralai";
@@ -42,8 +43,13 @@ const mistralModel = new ChatMistralAI({
     maxRetries: 2
 });
 
+const geminiModel = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash-lite",
+    apiKey: process.env.GEMINI_API_KEY
+});
+
 const agent = createReactAgent({
-    llm: mistralModel,
+    llm: geminiModel,
     tools: [emailTool, webSearchTool],
     messageModifier: `You are a helpful assistant. You have access to web search and email tools. 
     Use web search when you need current or real-time information and give the response in mainly in the form of Headings and their sub-headings/points.`
@@ -51,15 +57,15 @@ const agent = createReactAgent({
 
 export const generateResponse = async (messages) => {
     const stream = await agent.stream(
-        {messages},
-        {streamMode: "messages"}
+        { messages },
+        { streamMode: "messages" }
     );
-    
+
     return stream;
 }
 
-export const generateChatTitle = async(message) => {
-    const response = await mistralModel.invoke([
+export const generateChatTitle = async (message) => {
+    const response = await geminiModel.invoke([
         ["system", `
             You are a helpful assistant that generates concise and descriptive titles for chat conversations.
 
