@@ -28,29 +28,20 @@ const transporter = nodemailer.createTransport({
 
 // Verify connection
 transporter.verify()
-.then(() => {
-    console.log("Email transporter is ready to send emails.")
-})
-.catch((err) => {
-    console.log(err.message);
-    console.log("Email transporter verification failed.");
-});
+.then(() => console.log("Email transporter is ready to send emails."))
+.catch((err) => console.log("Email transporter verification failed:", err.message));
 
 export async function sendEmail({ to, subject, html = "" }) {
-    try {
-        const {token} = await oauth2Client.getAccessToken();
-        transporter.options.auth.accessToken = token;
+    const {token} = await oauth2Client.getAccessToken();
+    transporter.options.auth.accessToken = token;
 
-        const result = await transporter.sendMail({
-            from: process.env.GOOGLE_EMAIL_USER,
-            to,
-            subject,
-            html
-        });
-        
-        console.log(`Email sent successfully to ${to}`);
-        return result;
-    } catch(err) {
-        console.log("Error sending email:", err.message);
-    }
+    const result = await transporter.sendMail({
+        from: process.env.GOOGLE_EMAIL_USER,
+        to,
+        subject,
+        html
+    });
+
+    console.log(`Email sent successfully to ${to}`);
+    return result;
 }

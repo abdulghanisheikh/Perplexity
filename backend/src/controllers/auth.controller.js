@@ -51,7 +51,7 @@ export const registerUser = async(req, res) => {
             await sendEmail({ to: user.email, subject: "Welcome to perplexity", html });
         } catch(err) {
             await userModel.deleteOne({_id: user._id});
-            throw new Error("Failed to send verification email, register again.");
+            throw new Error("Failed to send verification email, Register again.");
         }
 
         return res.status(200).json({

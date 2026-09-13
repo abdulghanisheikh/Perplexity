@@ -4,6 +4,4 @@ import { connectToDB } from "./src/configs/database.config.js";
 
 connectToDB();
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server on ${process.env.PORT}`);
-});
+app.listen(process.env.PORT, () => console.log(`Server on ${process.env.PORT}`));
