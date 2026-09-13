@@ -46,7 +46,7 @@ const Dashboard = () => {
         }
 
         // select the last chat
-        const chatID = updatedChats[updatedChats.length - 1]._id;
+        const chatID = updatedChats[updatedChats.length - 1]?._id;
         await chat.handleOpenChat({activeChatId: chatID, message: messagesObject});
     }
 
@@ -60,7 +60,7 @@ const Dashboard = () => {
             }
 
             // select the last chat
-            const chatID = updatedChats[updatedChats.length - 1]._id;
+            const chatID = updatedChats[updatedChats.length - 1]?._id;
             await chat.handleOpenChat({activeChatId: chatID, message: messagesObject});
         }
 

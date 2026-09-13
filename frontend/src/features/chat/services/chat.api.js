@@ -1,17 +1,16 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_NODE_ENV === "development" ?
+const baseUrl = import.meta.env.VITE_NODE_ENV === "development" ?
     "http://localhost:3000" :
     import.meta.env.VITE_BACKEND_URL;
 
 const api = axios.create({
-    baseURL: `${baseURL}/api/chats`,
+    baseURL: `${baseUrl}/api/chats`,
     withCredentials: true
 });
 
 export const sendMessage = async({message, chatId = ""}) => {
-
-    const response = await fetch("/api/chats/message", {
+    const response = await fetch(`${baseUrl}/api/chats/message`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

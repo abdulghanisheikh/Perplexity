@@ -8,7 +8,7 @@ export const useChat = () => {
 
     const handleSendMessage = async({message, chatId}) => {
         try {
-            dispatch(setLoading(true));
+            dispatch(setLoading("message"));
             
             dispatch(addNewMessage({chatId, role: "user", content: message}));
             dispatch(addNewMessage({chatId, role: "ai", content: "LOADING"}));
@@ -58,13 +58,13 @@ export const useChat = () => {
             dispatch(setError(err?.response?.data?.message || "send message error"));
             toast.error(err?.response?.data?.message || "send message error");
         } finally {
-            dispatch(setLoading(false));
+            dispatch(setLoading(""));
         }
     }
 
     const handleGetChats = async() => {
         try {
-            dispatch(setLoading(true));
+            dispatch(setLoading("get chats"));
             const {data} = await getChats();
 
             const {success, chats} = data;
@@ -89,7 +89,7 @@ export const useChat = () => {
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "fetching chats failed"));
         } finally {
-            dispatch(setLoading(false));
+            dispatch(setLoading(""));
         }
     }
 
@@ -118,7 +118,7 @@ export const useChat = () => {
 
     const handleStartNewChat = async() => {
         try {
-            dispatch(setLoading(true));
+            dispatch(setLoading("new chat"));
 
             // create new chat in DB
             const {data} = await startNewChat();
@@ -136,13 +136,13 @@ export const useChat = () => {
         } catch(err) {
             dispatch(setError(err?.response?.data?.message || "starting new chat failed"));
         } finally {
-            dispatch(setLoading(false));
+            dispatch(setLoading(""));
         }
     }
 
     const handleDeleteChat = async(chatId) => {
         try {
-            dispatch(setLoading(true));
+            dispatch(setLoading("delete chat"));
 
             const {data} = await deleteChat(chatId);
 
@@ -155,7 +155,7 @@ export const useChat = () => {
             dispatch(setError(err?.response?.data?.message || "error while deleting the chat"));
             toast.error(err.response?.data?.message || "error while deleting the chat");
         } finally {
-            dispatch(setLoading(false));
+            dispatch(setLoading(""));
         }
     }
  

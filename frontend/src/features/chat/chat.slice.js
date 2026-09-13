@@ -6,7 +6,7 @@ const chatSlice = createSlice({
         chats: {},
         message: {},
         currentChatId: '',
-        loading: false,
+        loading: "",
         error: null
     },
     reducers: {
